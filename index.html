@@ -3,162 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>buffoEgg's App</title>
-<link rel="apple-touch-icon" sizes="180x180" href="buffo_icon_180.png">
-<link rel="icon" type="image/png" sizes="180x180" href="buffo_icon_180.png">
+<title>太田ファーム Egg's App</title>
+<link rel="apple-touch-icon" sizes="180x180" href="ohta_icon_180.png">
+<link rel="icon" type="image/png" sizes="180x180" href="ohta_icon_180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="buffoEgg">
+<meta name="apple-mobile-web-app-title" content="OhtaEgg">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:#F6FAF0;color:#1A3A1A;font-size:16px;padding-bottom:60px;-webkit-text-size-adjust:100%;}
-.hd{background:#2D6A2D;padding:16px;padding-bottom:40px;position:relative;overflow:hidden;}
-.hd::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:24px;background:#F6FAF0;border-radius:50% 50% 0 0/24px 24px 0 0;}
+body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:#FAF6EE;color:#2A0E13;font-size:16px;padding-bottom:60px;-webkit-text-size-adjust:100%;}
+.hd{background:#8B2635;padding:16px;padding-bottom:40px;position:relative;overflow:hidden;}
+.hd::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:24px;background:#FAF6EE;border-radius:50% 50% 0 0/24px 24px 0 0;}
 .hd-in{display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
 .hd h1{font-size:20px;font-weight:800;color:#fff;}
 .hd p{font-size:11px;color:rgba(255,255,255,.8);margin-top:2px;}
-.tb-wrap{background:#F6FAF0;padding:10px 14px 6px;}
+.tb-wrap{background:#FAF6EE;padding:10px 14px 6px;}
 .tb{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-radius:12px;padding:4px;gap:3px;}
-.tab{padding:10px 0;font-size:12px;font-weight:800;color:#5A8A5A;background:none;border:none;cursor:pointer;border-radius:9px;line-height:1.4;font-family:inherit;-webkit-appearance:none;}
-.tab.on{background:#2D6A2D;color:#fff;}
+.tab{padding:10px 0;font-size:12px;font-weight:800;color:#9B6B72;background:none;border:none;cursor:pointer;border-radius:9px;line-height:1.4;font-family:inherit;-webkit-appearance:none;}
+.tab.on{background:#8B2635;color:#fff;}
 .pg{display:none;padding:12px 14px;}.pg.on{display:block;}
 .dr{display:flex;gap:8px;margin-bottom:14px;}
-.dr input[type=date]{flex:1;padding:13px 12px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#fff;-webkit-appearance:none;font-family:inherit;}
-.btn-t{padding:13px 16px;background:#D0EAD0;border:2px solid #C0DCC0;border-radius:10px;font-size:14px;font-weight:800;color:#2D6A2D;cursor:pointer;white-space:nowrap;font-family:inherit;-webkit-appearance:none;}
-.stl{font-size:14px;font-weight:800;color:#1A4A1A;margin-bottom:10px;}
+.dr input[type=date]{flex:1;padding:13px 12px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#fff;-webkit-appearance:none;font-family:inherit;}
+.btn-t{padding:13px 16px;background:#E8D0D0;border:2px solid #D4B8B8;border-radius:10px;font-size:14px;font-weight:800;color:#8B2635;cursor:pointer;white-space:nowrap;font-family:inherit;-webkit-appearance:none;}
+.stl{font-size:14px;font-weight:800;color:#3D1A1F;margin-bottom:10px;}
 .rg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
-.rb{background:#fff;border:2.5px solid #C0DCC0;border-radius:14px;padding:16px 4px 12px;text-align:center;position:relative;font-family:inherit;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;}
-.rb.on{border-color:#3D8A3D;background:#EAF5EA;}
-.rb .rn{font-size:26px;font-weight:800;color:#2D6A2D;display:block;line-height:1;}
-.rb .rs{font-size:11px;color:#5A8A5A;margin-top:4px;font-weight:700;display:block;}
-.rb .bdg{position:absolute;top:-7px;right:-7px;background:#F5E100;color:#1A4A1A;font-size:10px;font-weight:800;min-width:20px;height:20px;padding:0 3px;border-radius:10px;display:none;align-items:center;justify-content:center;border:2px solid #F6FAF0;}
-.sel-b{display:inline-block;background:#2D6A2D;color:#fff;padding:9px 18px;border-radius:22px;font-size:15px;font-weight:800;margin-bottom:12px;}
-.card{background:#fff;border-radius:16px;border:1.5px solid #C0DCC0;padding:16px;margin-bottom:12px;}
-.ct{font-size:14px;font-weight:800;color:#2D6A2D;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px dashed #C0DCC0;}
+.rb{background:#fff;border:2.5px solid #D4B8B8;border-radius:14px;padding:16px 4px 12px;text-align:center;position:relative;font-family:inherit;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;}
+.rb.on{border-color:#6B1C29;background:#F5EFE8;}
+.rb .rn{font-size:26px;font-weight:800;color:#8B2635;display:block;line-height:1;}
+.rb .rs{font-size:11px;color:#9B6B72;margin-top:4px;font-weight:700;display:block;}
+.rb .bdg{position:absolute;top:-7px;right:-7px;background:#F5E100;color:#3D1A1F;font-size:10px;font-weight:800;min-width:20px;height:20px;padding:0 3px;border-radius:10px;display:none;align-items:center;justify-content:center;border:2px solid #FAF6EE;}
+.sel-b{display:inline-block;background:#8B2635;color:#fff;padding:9px 18px;border-radius:22px;font-size:15px;font-weight:800;margin-bottom:12px;}
+.card{background:#fff;border-radius:16px;border:1.5px solid #D4B8B8;padding:16px;margin-bottom:12px;}
+.ct{font-size:14px;font-weight:800;color:#8B2635;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px dashed #D4B8B8;}
 .fi{margin-bottom:13px;}.fi:last-child{margin-bottom:0;}
-.fi label{display:block;font-size:12px;font-weight:800;color:#5A8A5A;margin-bottom:7px;}
-.fi input[type=text],.fi textarea,.fi select{width:100%;padding:13px 14px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;-webkit-appearance:none;}
+.fi label{display:block;font-size:12px;font-weight:800;color:#9B6B72;margin-bottom:7px;}
+.fi input[type=text],.fi textarea,.fi select{width:100%;padding:13px 14px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;-webkit-appearance:none;}
 .fi textarea{resize:none;height:72px;}
-.num-input{width:100%;padding:14px;border:2px solid #B5DDB5;border-radius:10px;font-size:36px;font-weight:800;color:#2D6A2D;background:#fff;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;display:block;}
+.num-input{width:100%;padding:14px;border:2px solid #D4AAAA;border-radius:10px;font-size:36px;font-weight:800;color:#8B2635;background:#fff;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;display:block;}
 .num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button{-webkit-appearance:none;}
-.num-input:focus{outline:none;border-color:#3D8A3D;background:#EAF5EA;}
+.num-input:focus{outline:none;border-color:#6B1C29;background:#F5EFE8;}
 .num-input.brk{color:#C0392B;border-color:#FFB5B5;}.num-input.brk:focus{background:#FFF0F0;}
-.btn-save{width:100%;padding:18px;background:#2D6A2D;color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:800;cursor:pointer;margin-top:6px;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;}
-.btn-save:active{background:#1A4A1A;}.btn-save:disabled{background:#A0C0A0;cursor:not-allowed;}
+.btn-save{width:100%;padding:18px;background:#8B2635;color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:800;cursor:pointer;margin-top:6px;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;}
+.btn-save:active{background:#3D1A1F;}.btn-save:disabled{background:#C4909A;cursor:not-allowed;}
 .sw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .st{width:100%;border-collapse:collapse;font-size:13px;min-width:360px;}
-.st th{background:#2D6A2D;color:#fff;font-weight:800;padding:10px 6px;text-align:center;font-size:11px;}
-.st td{padding:9px 6px;text-align:center;border-bottom:1px solid #C0DCC0;}
-.st td:first-child{text-align:left;font-weight:700;color:#5A8A5A;white-space:nowrap;}
-.st .tot{font-weight:800;color:#2D6A2D;}
-.st tr:nth-child(even) td{background:#EAF5EA;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#1A4A1A;color:#fff;padding:13px 26px;border-radius:30px;font-size:15px;font-weight:700;opacity:0;transition:all .3s;z-index:9999;white-space:nowrap;pointer-events:none;font-family:inherit;}
-.toast.ok{background:#3D8A3D;}.toast.ng{background:#C0392B;}.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.ld,.em{text-align:center;padding:48px 20px;color:#5A8A5A;font-size:15px;font-weight:600;}
+.st th{background:#8B2635;color:#fff;font-weight:800;padding:10px 6px;text-align:center;font-size:11px;}
+.st td{padding:9px 6px;text-align:center;border-bottom:1px solid #D4B8B8;}
+.st td:first-child{text-align:left;font-weight:700;color:#9B6B72;white-space:nowrap;}
+.st .tot{font-weight:800;color:#8B2635;}
+.st tr:nth-child(even) td{background:#F5EFE8;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#3D1A1F;color:#fff;padding:13px 26px;border-radius:30px;font-size:15px;font-weight:700;opacity:0;transition:all .3s;z-index:9999;white-space:nowrap;pointer-events:none;font-family:inherit;}
+.toast.ok{background:#6B1C29;}.toast.ng{background:#C0392B;}.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.ld,.em{text-align:center;padding:48px 20px;color:#9B6B72;font-size:15px;font-weight:600;}
 .ee{font-size:52px;display:block;margin-bottom:10px;}
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:flex-end;}
 .modal-overlay.open{display:flex;}
-.modal-sheet{background:#F6FAF0;border-radius:20px 20px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:0 0 32px;}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px;position:sticky;top:0;background:#F6FAF0;z-index:10;border-bottom:1px solid #C0DCC0;}
-.modal-title{font-size:16px;font-weight:800;color:#1A4A1A;}
-.modal-close{background:none;border:none;font-size:22px;color:#5A8A5A;cursor:pointer;padding:4px 8px;font-family:inherit;}
-.rec-card{background:#fff;border:1.5px solid #C0DCC0;border-radius:14px;margin:10px 14px;overflow:hidden;}
-.rec-card-h{background:#2D6A2D;color:#fff;padding:10px 14px;font-size:13px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+.modal-sheet{background:#FAF6EE;border-radius:20px 20px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:0 0 32px;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px;position:sticky;top:0;background:#FAF6EE;z-index:10;border-bottom:1px solid #D4B8B8;}
+.modal-title{font-size:16px;font-weight:800;color:#3D1A1F;}
+.modal-close{background:none;border:none;font-size:22px;color:#9B6B72;cursor:pointer;padding:4px 8px;font-family:inherit;}
+.rec-card{background:#fff;border:1.5px solid #D4B8B8;border-radius:14px;margin:10px 14px;overflow:hidden;}
+.rec-card-h{background:#8B2635;color:#fff;padding:10px 14px;font-size:13px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
 .rec-card-h .rc-total{font-size:20px;font-weight:800;}
 .rec-card-body{padding:12px 14px;}
 .rec-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}.rec-row:last-child{margin-bottom:0;}
-.rec-row label{font-size:11px;font-weight:800;color:#5A8A5A;width:70px;flex-shrink:0;}
-.rec-input{flex:1;padding:9px 12px;border:1.5px solid #C0DCC0;border-radius:8px;font-size:15px;background:#EAF5EA;font-family:inherit;-webkit-appearance:none;}
-.rec-input:focus{outline:none;border-color:#2D6A2D;}
-.rec-save-btn{width:calc(100% - 28px);margin:8px 14px 0;padding:14px;background:#2D6A2D;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
-.di{cursor:pointer;transition:background .15s;background:#fff;border:1.5px solid #C0DCC0;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
-.di:active{background:#EAF5EA;}
-.di .dt{font-size:14px;font-weight:800;color:#2D6A2D;}
-.di .dd{font-size:11px;color:#5A8A5A;margin-top:3px;}
-.di .dv{font-size:28px;font-weight:800;color:#2D6A2D;text-align:right;}
-.di .du{font-size:11px;color:#5A8A5A;text-align:right;}
-.st tr.month-row{cursor:pointer;}.st tr.month-row td{transition:background .15s;}.st tr.month-row td:first-child{color:#2D6A2D;text-decoration:underline dotted #2D6A2D;}
+.rec-row label{font-size:11px;font-weight:800;color:#9B6B72;width:70px;flex-shrink:0;}
+.rec-input{flex:1;padding:9px 12px;border:1.5px solid #D4B8B8;border-radius:8px;font-size:15px;background:#F5EFE8;font-family:inherit;-webkit-appearance:none;}
+.rec-input:focus{outline:none;border-color:#8B2635;}
+.rec-save-btn{width:calc(100% - 28px);margin:8px 14px 0;padding:14px;background:#8B2635;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+.di{cursor:pointer;transition:background .15s;background:#fff;border:1.5px solid #D4B8B8;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.di:active{background:#F5EFE8;}
+.di .dt{font-size:14px;font-weight:800;color:#8B2635;}
+.di .dd{font-size:11px;color:#9B6B72;margin-top:3px;}
+.di .dv{font-size:28px;font-weight:800;color:#8B2635;text-align:right;}
+.di .du{font-size:11px;color:#9B6B72;text-align:right;}
+.st tr.month-row{cursor:pointer;}.st tr.month-row td{transition:background .15s;}.st tr.month-row td:first-child{color:#8B2635;text-decoration:underline dotted #8B2635;}
 .month-modal-inner{padding:0 12px 12px;}
 .month-banner{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;}
-.month-card-g{background:#2D6A2D;color:#fff;border-radius:12px;padding:12px;text-align:center;}
-.month-card-w{background:#fff;border:1.5px solid #C0DCC0;color:#1A4A1A;border-radius:12px;padding:12px;text-align:center;}
+.month-card-g{background:#8B2635;color:#fff;border-radius:12px;padding:12px;text-align:center;}
+.month-card-w{background:#fff;border:1.5px solid #D4B8B8;color:#3D1A1F;border-radius:12px;padding:12px;text-align:center;}
 .mc-lb{font-size:10px;opacity:.85;font-weight:bold;margin-bottom:3px;}.mc-vl{font-size:26px;font-weight:800;line-height:1;}.mc-un{font-size:10px;opacity:.8;margin-top:2px;}
 .mn-banner{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.mn-card{background:#2D6A2D;border-radius:14px;padding:14px;text-align:center;color:#fff;}
-.mn-card.sub{background:#fff;border:1.5px solid #C0DCC0;color:#1A4A1A;}
+.mn-card{background:#8B2635;border-radius:14px;padding:14px;text-align:center;color:#fff;}
+.mn-card.sub{background:#fff;border:1.5px solid #D4B8B8;color:#3D1A1F;}
 .mn-card .mn-label{font-size:11px;opacity:.85;font-weight:700;margin-bottom:4px;}
 .mn-card .mn-val{font-size:32px;font-weight:800;line-height:1;}
 .mn-card .mn-unit{font-size:13px;opacity:.8;margin-top:2px;}
-.sale-banner{background:#2D6A2D;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.sale-banner{background:#8B2635;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
 .sale-banner .sb-label{font-size:13px;color:rgba(255,255,255,.85);font-weight:700;}
 .sale-banner .sb-val{font-size:26px;font-weight:800;color:#fff;white-space:nowrap;}
 .sub-tb{display:flex;gap:6px;margin-bottom:14px;}
-.sub-tab{flex:1;padding:10px;background:#fff;border:2px solid #C0DCC0;border-radius:10px;font-size:13px;font-weight:800;color:#5A8A5A;cursor:pointer;font-family:inherit;-webkit-appearance:none;text-align:center;}
-.sub-tab.on{background:#2D6A2D;color:#fff;border-color:#2D6A2D;}
+.sub-tab{flex:1;padding:10px;background:#fff;border:2px solid #D4B8B8;border-radius:10px;font-size:13px;font-weight:800;color:#9B6B72;cursor:pointer;font-family:inherit;-webkit-appearance:none;text-align:center;}
+.sub-tab.on{background:#8B2635;color:#fff;border-color:#8B2635;}
 .sz-item-wrap{margin-bottom:4px;}
-.sz-name{width:100%;padding:10px 12px;border:2px solid #C0DCC0;border-radius:10px;font-size:15px;background:#EAF5EA;font-family:inherit;-webkit-appearance:none;}
-.sz-qty{width:100%;padding:10px 8px;border:2px solid #C0DCC0;border-radius:10px;font-size:15px;background:#EAF5EA;font-family:inherit;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;}
+.sz-name{width:100%;padding:10px 12px;border:2px solid #D4B8B8;border-radius:10px;font-size:15px;background:#F5EFE8;font-family:inherit;-webkit-appearance:none;}
+.sz-qty{width:100%;padding:10px 8px;border:2px solid #D4B8B8;border-radius:10px;font-size:15px;background:#F5EFE8;font-family:inherit;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;}
 .sz-qty::-webkit-outer-spin-button,.sz-qty::-webkit-inner-spin-button{-webkit-appearance:none;}
-.sz-unit{width:100%;padding:10px 6px;border:2px solid #C0DCC0;border-radius:10px;font-size:14px;background:#EAF5EA;font-family:inherit;-webkit-appearance:none;}
-.sz-price{width:100%;padding:10px 12px;border:2px solid #C0DCC0;border-radius:10px;font-size:15px;background:#EAF5EA;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
+.sz-unit{width:100%;padding:10px 6px;border:2px solid #D4B8B8;border-radius:10px;font-size:14px;background:#F5EFE8;font-family:inherit;-webkit-appearance:none;}
+.sz-price{width:100%;padding:10px 12px;border:2px solid #D4B8B8;border-radius:10px;font-size:15px;background:#F5EFE8;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
 .sz-price::-webkit-outer-spin-button,.sz-price::-webkit-inner-spin-button{-webkit-appearance:none;}
-.sz-month{background:#fff;border:1.5px solid #C0DCC0;border-radius:14px;margin-bottom:12px;overflow:hidden;}
-.sz-month-h{background:#2D6A2D;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;}
+.sz-month{background:#fff;border:1.5px solid #D4B8B8;border-radius:14px;margin-bottom:12px;overflow:hidden;}
+.sz-month-h{background:#8B2635;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;}
 .sz-month-body{padding:10px 14px;}
-.sz-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #EAF5EA;font-size:13px;}.sz-item:last-child{border-bottom:none;}
-.sz-total{font-weight:800;color:#2D6A2D;padding-top:6px;text-align:right;font-size:13px;}
+.sz-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #F5EFE8;font-size:13px;}.sz-item:last-child{border-bottom:none;}
+.sz-total{font-weight:800;color:#8B2635;padding-top:6px;text-align:right;font-size:13px;}
 #milestone-banner{display:none;background:linear-gradient(135deg,#FFD700,#FFA500);color:#1A3A00;text-align:center;padding:14px 16px;font-size:18px;font-weight:800;letter-spacing:.5px;animation:mpulse 2s ease-in-out infinite;}
 @keyframes mpulse{0%,100%{opacity:1}50%{opacity:.82}}
 .mode-toggle{display:flex;gap:6px;margin-bottom:14px;}
-.mode-btn{flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;border:2px solid #C0DCC0;background:#fff;color:#5A8A5A;transition:all .2s;}
-.mode-btn.on{background:#2D6A2D;color:#fff;border-color:#2D6A2D;}
+.mode-btn{flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;border:2px solid #D4B8B8;background:#fff;color:#9B6B72;transition:all .2s;}
+.mode-btn.on{background:#8B2635;color:#fff;border-color:#8B2635;}
 /* 音声ステップUI */
-.vs-step-box{background:#fff;border:2.5px solid #2D6A2D;border-radius:16px;padding:20px 16px;margin-bottom:12px;text-align:center;}
+.vs-step-box{background:#fff;border:2.5px solid #8B2635;border-radius:16px;padding:20px 16px;margin-bottom:12px;text-align:center;}
 .vs-step-box.listening{border-color:#C0392B;animation:vpulse 1.5s ease-in-out infinite;}
 @keyframes vpulse{0%,100%{opacity:1}50%{opacity:.55}}
-.vs-step-label{font-size:12px;color:#5A8A5A;font-weight:700;margin-bottom:6px;}
-.vs-step-q{font-size:24px;font-weight:800;color:#2D6A2D;margin-bottom:8px;}
+.vs-step-label{font-size:12px;color:#9B6B72;font-weight:700;margin-bottom:6px;}
+.vs-step-q{font-size:24px;font-weight:800;color:#8B2635;margin-bottom:8px;}
 .vs-step-q.listening{color:#C0392B;}
 .vs-step-progress{display:flex;gap:4px;justify-content:center;margin-bottom:12px;}
-.vs-step-dot{width:12px;height:12px;border-radius:50%;background:#C0DCC0;}
-.vs-step-dot.done{background:#2D6A2D;}.vs-step-dot.active{background:#C0392B;animation:vpulse 1s ease-in-out infinite;}
-.vs-step-result{font-size:40px;font-weight:800;color:#2D6A2D;min-height:50px;line-height:1;}
-.vs-step-raw{font-size:11px;color:#A0C0A0;margin-top:6px;}
+.vs-step-dot{width:12px;height:12px;border-radius:50%;background:#D4B8B8;}
+.vs-step-dot.done{background:#8B2635;}.vs-step-dot.active{background:#C0392B;animation:vpulse 1s ease-in-out infinite;}
+.vs-step-result{font-size:40px;font-weight:800;color:#8B2635;min-height:50px;line-height:1;}
+.vs-step-raw{font-size:11px;color:#C4909A;margin-top:6px;}
 .vs-step-btns{display:flex;gap:8px;margin-top:14px;justify-content:center;}
-.vs-step-skip{padding:12px 24px;background:#D0EAD0;border:2px solid #C0DCC0;border-radius:12px;font-size:14px;font-weight:800;color:#2D6A2D;cursor:pointer;font-family:inherit;touch-action:manipulation;}
-.vs-step-retry{padding:12px 24px;background:#fff;border:2px solid #C0DCC0;border-radius:12px;font-size:14px;font-weight:800;color:#5A8A5A;cursor:pointer;font-family:inherit;touch-action:manipulation;}
+.vs-step-skip{padding:12px 24px;background:#E8D0D0;border:2px solid #D4B8B8;border-radius:12px;font-size:14px;font-weight:800;color:#8B2635;cursor:pointer;font-family:inherit;touch-action:manipulation;}
+.vs-step-retry{padding:12px 24px;background:#fff;border:2px solid #D4B8B8;border-radius:12px;font-size:14px;font-weight:800;color:#9B6B72;cursor:pointer;font-family:inherit;touch-action:manipulation;}
 .vs-controls{display:flex;gap:8px;margin-bottom:12px;}
 .vs-btn-start{flex:2;padding:16px;background:#C0392B;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;transition:background .2s;}
 .vs-btn-start.active{background:#7B241C;}
-.vs-btn-clear{flex:1;padding:16px;background:#fff;color:#5A8A5A;border:2px solid #C0DCC0;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;}
-.vs-preview{display:none;background:#fff;border:2.5px solid #2D6A2D;border-radius:16px;margin-bottom:12px;overflow:hidden;}
-.vs-preview-h{background:#2D6A2D;color:#fff;padding:10px 14px;font-size:13px;font-weight:800;}
+.vs-btn-clear{flex:1;padding:16px;background:#fff;color:#9B6B72;border:2px solid #D4B8B8;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;}
+.vs-preview{display:none;background:#fff;border:2.5px solid #8B2635;border-radius:16px;margin-bottom:12px;overflow:hidden;}
+.vs-preview-h{background:#8B2635;color:#fff;padding:10px 14px;font-size:13px;font-weight:800;}
 .vs-preview-body{padding:12px 14px;}
 .vs-preview-nums{display:flex;gap:6px;margin-top:4px;}
 .vs-preview-field{flex:1;text-align:center;}
-.vs-preview-field label{display:block;font-size:10px;color:#5A8A5A;font-weight:800;margin-bottom:4px;}
-.vs-preview-inp{width:100%;padding:10px 2px;border:1.5px solid #C0DCC0;border-radius:8px;font-size:22px;font-weight:800;color:#2D6A2D;background:#EAF5EA;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
+.vs-preview-field label{display:block;font-size:10px;color:#9B6B72;font-weight:800;margin-bottom:4px;}
+.vs-preview-inp{width:100%;padding:10px 2px;border:1.5px solid #D4B8B8;border-radius:8px;font-size:22px;font-weight:800;color:#8B2635;background:#F5EFE8;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
 .vs-preview-inp::-webkit-outer-spin-button,.vs-preview-inp::-webkit-inner-spin-button{-webkit-appearance:none;}
 .vs-preview-inp.brk{color:#C0392B;border-color:#FFB5B5;background:#FFF0F0;}
 .vs-preview-btns{display:flex;gap:8px;margin-top:12px;}
-.vs-preview-ok{flex:2;padding:16px;background:#2D6A2D;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;touch-action:manipulation;}
-.vs-preview-ng{flex:1;padding:16px;background:#fff;color:#5A8A5A;border:2px solid #C0DCC0;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;touch-action:manipulation;}
-.vs-preview-room{background:#2D6A2D;color:#fff;padding:6px 14px;border-radius:20px;font-size:16px;font-weight:800;display:inline-block;margin-bottom:10px;}
-.vs-card{background:#fff;border:1.5px solid #C0DCC0;border-radius:14px;margin-bottom:8px;overflow:hidden;}
-.vs-card-h{background:#2D6A2D;color:#fff;padding:10px 14px;font-size:14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+.vs-preview-ok{flex:2;padding:16px;background:#8B2635;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;touch-action:manipulation;}
+.vs-preview-ng{flex:1;padding:16px;background:#fff;color:#9B6B72;border:2px solid #D4B8B8;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;touch-action:manipulation;}
+.vs-preview-room{background:#8B2635;color:#fff;padding:6px 14px;border-radius:20px;font-size:16px;font-weight:800;display:inline-block;margin-bottom:10px;}
+.vs-card{background:#fff;border:1.5px solid #D4B8B8;border-radius:14px;margin-bottom:8px;overflow:hidden;}
+.vs-card-h{background:#8B2635;color:#fff;padding:10px 14px;font-size:14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
 .vs-card-total{font-size:20px;font-weight:800;}
 .vs-card-del{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;padding:0 0 0 8px;line-height:1;font-family:inherit;}
 .vs-card-body{display:flex;gap:6px;padding:12px 14px;}
 .vs-field{flex:1;text-align:center;}
-.vs-field label{display:block;font-size:10px;color:#5A8A5A;font-weight:800;margin-bottom:4px;}
-.vs-inp{width:100%;padding:10px 2px;border:1.5px solid #C0DCC0;border-radius:8px;font-size:22px;font-weight:800;color:#2D6A2D;background:#EAF5EA;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
+.vs-field label{display:block;font-size:10px;color:#9B6B72;font-weight:800;margin-bottom:4px;}
+.vs-inp{width:100%;padding:10px 2px;border:1.5px solid #D4B8B8;border-radius:8px;font-size:22px;font-weight:800;color:#8B2635;background:#F5EFE8;text-align:center;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield;}
 .vs-inp::-webkit-outer-spin-button,.vs-inp::-webkit-inner-spin-button{-webkit-appearance:none;}
 .vs-inp.brk{color:#C0392B;border-color:#FFB5B5;background:#FFF0F0;}
-.vs-save-all{width:100%;padding:18px;background:#2D6A2D;color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;margin-top:4px;}
-.vs-save-all:disabled{background:#A0C0A0;cursor:not-allowed;}
-.vs-empty{text-align:center;color:#A0C0A0;font-size:13px;padding:16px 0;}
+.vs-save-all{width:100%;padding:18px;background:#8B2635;color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-appearance:none;touch-action:manipulation;margin-top:4px;}
+.vs-save-all:disabled{background:#C4909A;cursor:not-allowed;}
+.vs-empty{text-align:center;color:#C4909A;font-size:13px;padding:16px 0;}
 /* スケルトンローディング */
-.skel{background:linear-gradient(90deg,#EAF5EA 25%,#D0EAD0 50%,#EAF5EA 75%);background-size:200% 100%;animation:skel 1.2s infinite;border-radius:8px;height:60px;margin-bottom:8px;}
+.skel{background:linear-gradient(90deg,#F5EFE8 25%,#E8D0D0 50%,#F5EFE8 75%);background-size:200% 100%;animation:skel 1.2s infinite;border-radius:8px;height:60px;margin-bottom:8px;}
 @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
@@ -169,8 +169,8 @@ body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:
     <div id="wx-forecast" style="display:flex;gap:6px;"><div style="color:#fff;font-size:12px;font-weight:600;">取得中...</div></div>
   </div>
   <div class="hd-in">
-    <img src="buffo_icon_180.png" alt="buffo" style="width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0;">
-    <div><h1>buffoEgg's App</h1><p>ふぁーむbuffo　産卵・給餌管理</p></div>
+    <img src="ohta_icon_180.png" alt="ohta" style="width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+    <div><h1>太田ファーム Egg's App</h1><p>太田ファーム　産卵記録管理</p></div>
   </div>
 </div>
 <div class="tb-wrap"><div class="tb">
@@ -191,36 +191,36 @@ body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:
     <div class="rg" id="room-grid"></div>
     <div id="form-area" style="display:none;">
       <div class="sel-b" id="sel-badge">🏠 1号舎</div>
-      <div id="flock-bar" style="background:#fff;border:1.5px solid #C0DCC0;border-radius:14px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div><div style="font-size:12px;color:#5A8A5A;font-weight:700;margin-bottom:2px;">🐔 鶏舎情報</div><div id="flock-info" style="font-size:14px;font-weight:800;color:#1A4A1A;">入舎データなし</div></div>
-        <button onclick="toggleFlockPanel()" style="background:#D0EAD0;border:1.5px solid #C0DCC0;border-radius:10px;padding:7px 12px;font-size:12px;font-weight:800;color:#2D6A2D;cursor:pointer;font-family:inherit;white-space:nowrap;" id="flock-toggle-btn">＋ 更新</button>
+      <div id="flock-bar" style="background:#fff;border:1.5px solid #D4B8B8;border-radius:14px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div><div style="font-size:12px;color:#9B6B72;font-weight:700;margin-bottom:2px;">🐔 鶏舎情報</div><div id="flock-info" style="font-size:14px;font-weight:800;color:#3D1A1F;">入舎データなし</div></div>
+        <button onclick="toggleFlockPanel()" style="background:#E8D0D0;border:1.5px solid #D4B8B8;border-radius:10px;padding:7px 12px;font-size:12px;font-weight:800;color:#8B2635;cursor:pointer;font-family:inherit;white-space:nowrap;" id="flock-toggle-btn">＋ 更新</button>
       </div>
       <div id="flock-panel" style="display:none;">
-        <div class="card" style="border-color:#B5DDB5;">
-          <div class="ct" style="color:#1A4A1A;">🐔 鶏舎情報の登録・更新</div>
+        <div class="card" style="border-color:#D4AAAA;">
+          <div class="ct" style="color:#3D1A1F;">🐔 鶏舎情報の登録・更新</div>
           <div style="display:flex;gap:6px;margin-bottom:14px;">
-            <button id="fpb-entry" onclick="fpSw('entry')" style="flex:1;padding:9px;border-radius:10px;font-size:12px;font-weight:800;background:#2D6A2D;color:#fff;border:2px solid #2D6A2D;cursor:pointer;font-family:inherit;">➕ 入舎登録</button>
-            <button id="fpb-change" onclick="fpSw('change')" style="flex:1;padding:9px;border-radius:10px;font-size:12px;font-weight:800;background:#fff;color:#2D6A2D;border:2px solid #C0DCC0;cursor:pointer;font-family:inherit;">📉 羽数変動</button>
+            <button id="fpb-entry" onclick="fpSw('entry')" style="flex:1;padding:9px;border-radius:10px;font-size:12px;font-weight:800;background:#8B2635;color:#fff;border:2px solid #8B2635;cursor:pointer;font-family:inherit;">➕ 入舎登録</button>
+            <button id="fpb-change" onclick="fpSw('change')" style="flex:1;padding:9px;border-radius:10px;font-size:12px;font-weight:800;background:#fff;color:#8B2635;border:2px solid #D4B8B8;cursor:pointer;font-family:inherit;">📉 羽数変動</button>
           </div>
           <div id="fpp-entry">
-            <div class="fi"><label>入舎日</label><div style="display:flex;gap:8px;"><input type="date" id="fr-entry" style="flex:1;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><button class="btn-t" onclick="setToday('fr-entry')">今日</button></div></div>
+            <div class="fi"><label>入舎日</label><div style="display:flex;gap:8px;"><input type="date" id="fr-entry" style="flex:1;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><button class="btn-t" onclick="setToday('fr-entry')">今日</button></div></div>
             <div class="fi"><label>入舎時の日齢</label><input type="number" id="fr-age" class="num-input" value="0" min="0" inputmode="numeric"></div>
             <div class="fi"><label>入舎羽数</label><input type="number" id="fr-count" class="num-input" value="0" min="0" inputmode="numeric"></div>
-            <div class="fi"><label>品種・メモ</label><input type="text" id="fr-breed" placeholder="例：岡崎おうはん" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
-            <div class="fi"><label>記録者</label><input type="text" id="fr-rec" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+            <div class="fi"><label>品種・メモ</label><input type="text" id="fr-breed" placeholder="例：岡崎おうはん" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
+            <div class="fi"><label>記録者</label><input type="text" id="fr-rec" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
             <button class="btn-save" style="margin-top:8px;" onclick="doSaveFlock()">入舎を登録</button>
           </div>
           <div id="fpp-change" style="display:none;">
-            <div class="fi"><label>日付</label><div style="display:flex;gap:8px;"><input type="date" id="fc-date" style="flex:1;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><button class="btn-t" onclick="setToday('fc-date')">今日</button></div></div>
-            <div class="fi"><label>変動種別</label><select id="fc-type" onchange="toggleAddFields()" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><option value="">選んでね</option><option>出荷（肉）</option><option>死亡</option><option>移動（他号舎へ）</option><option>追加（他号舎から）</option><option>追加（新規）</option><option>その他</option></select></div>
+            <div class="fi"><label>日付</label><div style="display:flex;gap:8px;"><input type="date" id="fc-date" style="flex:1;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><button class="btn-t" onclick="setToday('fc-date')">今日</button></div></div>
+            <div class="fi"><label>変動種別</label><select id="fc-type" onchange="toggleAddFields()" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><option value="">選んでね</option><option>出荷（肉）</option><option>死亡</option><option>移動（他号舎へ）</option><option>追加（他号舎から）</option><option>追加（新規）</option><option>その他</option></select></div>
             <div class="fi"><label id="fc-count-label">羽数（減少分）</label><input type="number" id="fc-count" class="num-input" value="0" min="0" inputmode="numeric"></div>
             <div id="fc-add-fields" style="display:none;">
-              <div class="fi"><label>移動元の号舎</label><select id="fc-source" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><option value="">選んでね</option><option>1号舎</option><option>2号舎</option><option>3号舎</option><option>4号舎</option><option>5号舎</option><option>6号舎</option><option>7号舎</option><option value="その他">その他</option></select></div>
-              <div class="fi"><label>追加する鶏の品種</label><input type="text" id="fc-add-breed" placeholder="例：寒曳地鶏" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+              <div class="fi"><label>移動元の号舎</label><select id="fc-source" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><option value="">選んでね</option><option>1号舎</option><option>2号舎</option><option>3号舎</option><option>4号舎</option><option>5号舎</option><option>6号舎</option><option>7号舎</option><option value="その他">その他</option></select></div>
+              <div class="fi"><label>追加する鶏の品種</label><input type="text" id="fc-add-breed" placeholder="例：寒曳地鶏" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
               <div class="fi"><label>追加する鶏の日齢</label><input type="number" id="fc-add-age" class="num-input" value="0" min="0" inputmode="numeric"></div>
             </div>
-            <div class="fi"><label>メモ</label><textarea id="fc-memo" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;resize:none;height:60px;font-family:inherit;" placeholder="状況など"></textarea></div>
-            <div class="fi"><label>記録者</label><input type="text" id="fc-rec" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+            <div class="fi"><label>メモ</label><textarea id="fc-memo" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;resize:none;height:60px;font-family:inherit;" placeholder="状況など"></textarea></div>
+            <div class="fi"><label>記録者</label><input type="text" id="fc-rec" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
             <button class="btn-save" id="fc-save-btn" style="margin-top:8px;background:#C0392B;" onclick="doSaveFlockChange()">変動を記録</button>
           </div>
         </div>
@@ -256,7 +256,7 @@ body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:
       <button class="vs-btn-clear" onclick="clearVsSession()">🗑 クリア</button>
     </div>
     <div class="vs-preview" id="vs-preview"></div>
-    <div class="fi" style="margin-bottom:12px;"><label>記録者</label><input type="text" id="vs-recorder" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+    <div class="fi" style="margin-bottom:12px;"><label>記録者</label><input type="text" id="vs-recorder" placeholder="お名前" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
     <div id="vs-log"><div class="vs-empty">まだ記録がありません</div></div>
     <button class="vs-save-all" id="vs-save-all" onclick="saveAllSession()" disabled>💾 全て保存する</button>
   </div>
@@ -292,10 +292,10 @@ body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:
   <div id="sp-shizai" style="display:none;">
     <div id="shizai-history"><div class="skel"></div></div>
     <div class="card">
-      <div class="ct" style="display:flex;justify-content:space-between;align-items:center;"><span>📦 資材コストを記録</span><span id="sz-live-total" style="font-size:18px;color:#2D6A2D;font-weight:800;">¥0</span></div>
-      <div class="fi"><label>対象月</label><div style="display:flex;gap:8px;align-items:center;"><input type="month" id="sz-month" style="flex:1;padding:12px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><button class="btn-t" onclick="setSzThisMonth()">今月</button></div></div>
+      <div class="ct" style="display:flex;justify-content:space-between;align-items:center;"><span>📦 資材コストを記録</span><span id="sz-live-total" style="font-size:18px;color:#8B2635;font-weight:800;">¥0</span></div>
+      <div class="fi"><label>対象月</label><div style="display:flex;gap:8px;align-items:center;"><input type="month" id="sz-month" style="flex:1;padding:12px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><button class="btn-t" onclick="setSzThisMonth()">今月</button></div></div>
       <div id="sz-rows"></div>
-      <div class="fi" style="margin-top:10px;"><label>記録者</label><input type="text" id="sz-recorder" placeholder="お名前" style="width:100%;padding:12px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+      <div class="fi" style="margin-top:10px;"><label>記録者</label><input type="text" id="sz-recorder" placeholder="お名前" style="width:100%;padding:12px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
       <button class="btn-save" onclick="doSaveShizai()">資材コストを保存</button>
     </div>
   </div>
@@ -307,11 +307,11 @@ body{font-family:-apple-system,"Hiragino Maru Gothic Pro",sans-serif;background:
       <button class="modal-close" onclick="closeShizaiEditModalBtn()">✕</button>
     </div>
     <div style="padding:16px;">
-      <div class="fi"><label>資材名</label><input type="text" id="se-name" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"></div>
+      <div class="fi"><label>資材名</label><input type="text" id="se-name" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"></div>
       <div style="display:flex;gap:8px;">
-        <div class="fi" style="flex:1;"><label>数量</label><input type="number" id="se-qty" inputmode="numeric" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;-moz-appearance:textfield;"></div>
-        <div class="fi" style="flex:1;"><label>単位</label><select id="se-unit" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;"><option>kg</option><option>g</option><option>袋</option><option>個</option><option>L</option><option>本</option><option>箱</option><option>枚</option><option>その他</option></select></div>
-        <div class="fi" style="flex:1.5;"><label>金額（円）</label><input type="number" id="se-price" inputmode="numeric" style="width:100%;padding:13px;border:2px solid #C0DCC0;border-radius:10px;font-size:16px;background:#EAF5EA;font-family:inherit;-moz-appearance:textfield;"></div>
+        <div class="fi" style="flex:1;"><label>数量</label><input type="number" id="se-qty" inputmode="numeric" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;-moz-appearance:textfield;"></div>
+        <div class="fi" style="flex:1;"><label>単位</label><select id="se-unit" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;"><option>kg</option><option>g</option><option>袋</option><option>個</option><option>L</option><option>本</option><option>箱</option><option>枚</option><option>その他</option></select></div>
+        <div class="fi" style="flex:1.5;"><label>金額（円）</label><input type="number" id="se-price" inputmode="numeric" style="width:100%;padding:13px;border:2px solid #D4B8B8;border-radius:10px;font-size:16px;background:#F5EFE8;font-family:inherit;-moz-appearance:textfield;"></div>
       </div>
       <button class="btn-save" id="se-save-btn" onclick="doUpdateShizai()" style="margin-bottom:10px;">✅ 保存する</button>
       <button onclick="doDeleteShizai()" style="width:100%;padding:16px;background:#fff;color:#C0392B;border:2px solid #C0392B;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;">🗑 この記録を削除する</button>
@@ -411,7 +411,7 @@ function init(){
   callGAS("getTodayRecords").then(updateBadges).catch(function(){});
 }
 
-function buildSzRows(){var c=document.getElementById("sz-rows"),h="";for(var i=0;i<2;i++){if(i>0)h+='<div style="height:1px;background:#EAF5EA;margin:8px 0;"></div>';h+='<div class="sz-item-wrap"><div style="margin-bottom:5px;"><div style="font-size:10px;color:#5A8A5A;font-weight:700;margin-bottom:3px;">資材名</div><input class="sz-name" type="text" placeholder="例：配合飼料" data-sz="name"></div><div style="display:flex;gap:6px;align-items:flex-end;"><div style="flex:1;"><div style="font-size:10px;color:#5A8A5A;font-weight:700;margin-bottom:3px;">数量</div><input class="sz-qty" type="number" placeholder="0" inputmode="numeric" data-sz="qty"></div><div><div style="font-size:10px;color:#5A8A5A;font-weight:700;margin-bottom:3px;">単位</div><select class="sz-unit" data-sz="unit"><option>kg</option><option>g</option><option>袋</option><option>個</option><option>L</option><option>本</option><option>箱</option><option>枚</option><option>その他</option></select></div><div style="flex:1.5;"><div style="font-size:10px;color:#5A8A5A;font-weight:700;margin-bottom:3px;">金額（円）</div><input class="sz-price" type="number" oninput="calcSzTotal()" placeholder="¥0" inputmode="numeric" data-sz="price"></div></div></div>';}c.innerHTML=h;}
+function buildSzRows(){var c=document.getElementById("sz-rows"),h="";for(var i=0;i<2;i++){if(i>0)h+='<div style="height:1px;background:#F5EFE8;margin:8px 0;"></div>';h+='<div class="sz-item-wrap"><div style="margin-bottom:5px;"><div style="font-size:10px;color:#9B6B72;font-weight:700;margin-bottom:3px;">資材名</div><input class="sz-name" type="text" placeholder="例：配合飼料" data-sz="name"></div><div style="display:flex;gap:6px;align-items:flex-end;"><div style="flex:1;"><div style="font-size:10px;color:#9B6B72;font-weight:700;margin-bottom:3px;">数量</div><input class="sz-qty" type="number" placeholder="0" inputmode="numeric" data-sz="qty"></div><div><div style="font-size:10px;color:#9B6B72;font-weight:700;margin-bottom:3px;">単位</div><select class="sz-unit" data-sz="unit"><option>kg</option><option>g</option><option>袋</option><option>個</option><option>L</option><option>本</option><option>箱</option><option>枚</option><option>その他</option></select></div><div style="flex:1.5;"><div style="font-size:10px;color:#9B6B72;font-weight:700;margin-bottom:3px;">金額（円）</div><input class="sz-price" type="number" oninput="calcSzTotal()" placeholder="¥0" inputmode="numeric" data-sz="price"></div></div></div>';}c.innerHTML=h;}
 function setSzThisMonth(){var d=new Date();document.getElementById("sz-month").value=d.getFullYear()+"-"+pad(d.getMonth()+1);}
 function setMode(mode){document.getElementById("panel-manual").style.display=mode==='manual'?'block':'none';document.getElementById("panel-voice").style.display=mode==='voice'?'block':'none';document.getElementById("mode-manual").className='mode-btn'+(mode==='manual'?' on':'');document.getElementById("mode-voice").className='mode-btn'+(mode==='voice'?' on':'');if(mode==='manual')stopVoiceSession();}
 function loadWeather(){
@@ -504,19 +504,19 @@ function sw(tab){
 function summarySw(tab){document.getElementById("sp-egg").style.display=tab==="egg"?"block":"none";document.getElementById("sp-shizai").style.display=tab==="shizai"?"block":"none";document.getElementById("stab-egg").className="sub-tab"+(tab==="egg"?" on":"");document.getElementById("stab-shizai").className="sub-tab"+(tab==="shizai"?" on":"");}
 function toast(msg,type){var t=document.getElementById("toast");t.textContent=msg;t.className="toast "+(type||"")+" show";setTimeout(function(){t.className="toast";},3500);}
 function toggleFlockPanel(){var p=document.getElementById("flock-panel"),b=document.getElementById("flock-toggle-btn"),o=p.style.display==="none";p.style.display=o?"block":"none";b.textContent=o?"✕ 閉じる":"＋ 更新";if(o){setToday("fr-entry");setToday("fc-date");}}
-function fpSw(tab){document.getElementById("fpp-entry").style.display=tab==="entry"?"block":"none";document.getElementById("fpp-change").style.display=tab==="change"?"block":"none";var eb=document.getElementById("fpb-entry"),cb=document.getElementById("fpb-change");eb.style.background=tab==="entry"?"#2D6A2D":"#fff";eb.style.color=tab==="entry"?"#fff":"#2D6A2D";eb.style.borderColor=tab==="entry"?"#2D6A2D":"#C0DCC0";cb.style.background=tab==="change"?"#C0392B":"#fff";cb.style.color=tab==="change"?"#fff":"#2D6A2D";cb.style.borderColor=tab==="change"?"#C0392B":"#C0DCC0";}
+function fpSw(tab){document.getElementById("fpp-entry").style.display=tab==="entry"?"block":"none";document.getElementById("fpp-change").style.display=tab==="change"?"block":"none";var eb=document.getElementById("fpb-entry"),cb=document.getElementById("fpb-change");eb.style.background=tab==="entry"?"#8B2635":"#fff";eb.style.color=tab==="entry"?"#fff":"#8B2635";eb.style.borderColor=tab==="entry"?"#8B2635":"#D4B8B8";cb.style.background=tab==="change"?"#C0392B":"#fff";cb.style.color=tab==="change"?"#fff":"#8B2635";cb.style.borderColor=tab==="change"?"#C0392B":"#D4B8B8";}
 function loadFlockInfo(room){
   var cached=cacheGet('getFlockInfo',{room:room});
   if(cached){renderFlockInfoData(cached);return;}
   document.getElementById("flock-info").textContent="取得中...";
   callGAS('getFlockInfo',{room:room}).then(renderFlockInfoData).catch(function(){document.getElementById("flock-info").textContent="取得失敗";});
 }
-function renderFlockInfoData(d){var el=document.getElementById("flock-info");if(!d){el.textContent="入舎データなし";return;}var ac=d.age<60?"#E67E22":d.age<120?"#2D6A2D":"#1A4A8A";var h='<span style="background:'+ac+';color:#fff;padding:2px 9px;border-radius:12px;font-size:13px;margin-right:8px;">'+d.age+'日齢</span><span style="font-size:15px;">🐔 '+d.current+'羽</span>'+(d.breed?'<span style="font-size:12px;color:#5A8A5A;margin-left:8px;">'+d.breed+'</span>':'');h+='<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #C0DCC0;display:flex;gap:6px;justify-content:flex-end;"><button onclick="toggleFlockDetail()" style="padding:5px 12px;background:#D0EAD0;color:#2D6A2D;border:1.5px solid #C0DCC0;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">📋 内訳</button><button onclick="doResetFlock()" style="padding:5px 14px;background:#C0392B;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">🔄 リセット</button></div><div id="flock-detail-box" style="display:none;margin-top:8px;padding:10px;background:#F6FAF0;border:1px solid #C0DCC0;border-radius:10px;"></div>';el.innerHTML=h;}
-function toggleFlockDetail(){var box=document.getElementById("flock-detail-box");if(!box)return;if(box.style.display==="none"){box.style.display="block";box.innerHTML='<div style="font-size:12px;color:#5A8A5A;">読み込み中...</div>';callGAS('getFlockDetail',{room:sel}).then(renderFlockDetail).catch(function(){box.innerHTML='<div style="font-size:12px;color:#C0392B;">取得失敗</div>';});}else box.style.display="none";}
-function renderFlockDetail(res){var box=document.getElementById("flock-detail-box");if(!box)return;if(!res||!res.success||!res.main){box.innerHTML='<div style="font-size:12px;color:#5A8A5A;">データなし</div>';return;}var m=res.main,as=0;for(var i=0;i<res.additions.length;i++)as+=Number(res.additions[i].count)||0;var mc=Math.max(0,m.current-as);var h='<div style="font-size:12px;color:#5A8A5A;font-weight:800;margin-bottom:6px;">🏠 '+sel+' の内訳</div><div style="background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;"><div style="font-size:11px;color:#5A8A5A;">メイン群れ</div><div style="font-size:13px;color:#1A4A1A;font-weight:700;">'+(m.breed||"品種未登録")+' / '+m.age+'日齢 / '+mc+'羽</div><div style="font-size:10px;color:#5A8A5A;margin-top:2px;">入舎日: '+m.entryDate+'</div></div>';if(res.additions.length){for(var j=0;j<res.additions.length;j++){var a=res.additions[j];h+='<div style="background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;border-left:3px solid #E67E22;"><div style="font-size:11px;color:#5A8A5A;">追加 '+(j+1)+'</div><div style="font-size:13px;color:#1A4A1A;font-weight:700;">'+a.count+'羽'+(a.memo?'<span style="font-size:11px;font-weight:normal;color:#5A8A5A;"> / '+a.memo+'</span>':'')+'</div><div style="font-size:10px;color:#5A8A5A;margin-top:2px;">追加日: '+a.date+(a.recorder?' / 👤'+a.recorder:'')+'</div></div>';}}h+='<div style="font-size:12px;font-weight:800;color:#2D6A2D;text-align:right;margin-top:6px;">合計: '+m.current+'羽</div>';box.innerHTML=h;}
+function renderFlockInfoData(d){var el=document.getElementById("flock-info");if(!d){el.textContent="入舎データなし";return;}var ac=d.age<60?"#E67E22":d.age<120?"#8B2635":"#1A4A8A";var h='<span style="background:'+ac+';color:#fff;padding:2px 9px;border-radius:12px;font-size:13px;margin-right:8px;">'+d.age+'日齢</span><span style="font-size:15px;">🐔 '+d.current+'羽</span>'+(d.breed?'<span style="font-size:12px;color:#9B6B72;margin-left:8px;">'+d.breed+'</span>':'');h+='<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #D4B8B8;display:flex;gap:6px;justify-content:flex-end;"><button onclick="toggleFlockDetail()" style="padding:5px 12px;background:#E8D0D0;color:#8B2635;border:1.5px solid #D4B8B8;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">📋 内訳</button><button onclick="doResetFlock()" style="padding:5px 14px;background:#C0392B;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">🔄 リセット</button></div><div id="flock-detail-box" style="display:none;margin-top:8px;padding:10px;background:#FAF6EE;border:1px solid #D4B8B8;border-radius:10px;"></div>';el.innerHTML=h;}
+function toggleFlockDetail(){var box=document.getElementById("flock-detail-box");if(!box)return;if(box.style.display==="none"){box.style.display="block";box.innerHTML='<div style="font-size:12px;color:#9B6B72;">読み込み中...</div>';callGAS('getFlockDetail',{room:sel}).then(renderFlockDetail).catch(function(){box.innerHTML='<div style="font-size:12px;color:#C0392B;">取得失敗</div>';});}else box.style.display="none";}
+function renderFlockDetail(res){var box=document.getElementById("flock-detail-box");if(!box)return;if(!res||!res.success||!res.main){box.innerHTML='<div style="font-size:12px;color:#9B6B72;">データなし</div>';return;}var m=res.main,as=0;for(var i=0;i<res.additions.length;i++)as+=Number(res.additions[i].count)||0;var mc=Math.max(0,m.current-as);var h='<div style="font-size:12px;color:#9B6B72;font-weight:800;margin-bottom:6px;">🏠 '+sel+' の内訳</div><div style="background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;"><div style="font-size:11px;color:#9B6B72;">メイン群れ</div><div style="font-size:13px;color:#3D1A1F;font-weight:700;">'+(m.breed||"品種未登録")+' / '+m.age+'日齢 / '+mc+'羽</div><div style="font-size:10px;color:#9B6B72;margin-top:2px;">入舎日: '+m.entryDate+'</div></div>';if(res.additions.length){for(var j=0;j<res.additions.length;j++){var a=res.additions[j];h+='<div style="background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;border-left:3px solid #E67E22;"><div style="font-size:11px;color:#9B6B72;">追加 '+(j+1)+'</div><div style="font-size:13px;color:#3D1A1F;font-weight:700;">'+a.count+'羽'+(a.memo?'<span style="font-size:11px;font-weight:normal;color:#9B6B72;"> / '+a.memo+'</span>':'')+'</div><div style="font-size:10px;color:#9B6B72;margin-top:2px;">追加日: '+a.date+(a.recorder?' / 👤'+a.recorder:'')+'</div></div>';}}h+='<div style="font-size:12px;font-weight:800;color:#8B2635;text-align:right;margin-top:6px;">合計: '+m.current+'羽</div>';box.innerHTML=h;}
 function doSaveFlock(){var e=document.getElementById("fr-entry").value,c=document.getElementById("fr-count").value;if(!e||!c||c<=0){toast("入舎日・羽数は必須です","ng");return;}cacheInvalidate(['getFlockInfo']);callGAS('saveFlockEntry',{room:sel,entryDate:e,ageAtEntry:document.getElementById("fr-age").value,count:c,breed:document.getElementById("fr-breed").value,recorder:document.getElementById("fr-rec").value},'POST').then(function(r){toast("✅ "+r.message,"ok");document.getElementById("flock-panel").style.display="none";document.getElementById("flock-toggle-btn").textContent="＋ 更新";loadFlockInfo(sel);}).catch(function(e){toast("❌ "+(e.message||"エラー"),"ng");});}
 function doSaveFlockChange(){var type=document.getElementById("fc-type").value,count=document.getElementById("fc-count").value;if(!type||!count||count<=0){toast("種別・羽数を入力してください","ng");return;}cacheInvalidate(['getFlockInfo']);callGAS('saveFlockChange',{date:document.getElementById("fc-date").value,room:sel,type:type,count:count,memo:document.getElementById("fc-memo").value,recorder:document.getElementById("fc-rec").value,sourceRoom:document.getElementById("fc-source").value,addBreed:document.getElementById("fc-add-breed").value,addAge:document.getElementById("fc-add-age").value},'POST').then(function(r){toast("✅ "+r.message,"ok");document.getElementById("fc-count").value=0;document.getElementById("fc-memo").value="";document.getElementById("fc-add-breed").value="";document.getElementById("fc-add-age").value=0;document.getElementById("fc-source").value="";loadFlockInfo(sel);}).catch(function(e){toast("❌ "+(e.message||"エラー"),"ng");});}
-function toggleAddFields(){var t=document.getElementById("fc-type").value||"",isA=t.indexOf("追加")!==-1;document.getElementById("fc-add-fields").style.display=isA?"block":"none";document.getElementById("fc-count-label").textContent=isA?"羽数（追加分）":"羽数（減少分）";var b=document.getElementById("fc-save-btn");if(b)b.style.background=isA?"#2D6A2D":"#C0392B";}
+function toggleAddFields(){var t=document.getElementById("fc-type").value||"",isA=t.indexOf("追加")!==-1;document.getElementById("fc-add-fields").style.display=isA?"block":"none";document.getElementById("fc-count-label").textContent=isA?"羽数（追加分）":"羽数（減少分）";var b=document.getElementById("fc-save-btn");if(b)b.style.background=isA?"#8B2635":"#C0392B";}
 function doResetFlock(){if(!sel){toast("号舎を選んでね","ng");return;}if(!confirm(sel+"の鶏舎情報をリセットしますか？"))return;cacheInvalidate(['getFlockInfo']);callGAS('resetFlock',{room:sel,recorder:''},'POST').then(function(r){toast("✅ "+r.message,"ok");loadFlockInfo(sel);}).catch(function(e){toast("❌ "+(e.message||"エラー"),"ng");});}
 function calcSzTotal(){var t=0;document.querySelectorAll(".sz-price").forEach(function(el){t+=Number(el.value)||0;});document.getElementById("sz-live-total").textContent="合計 ¥"+t.toLocaleString();}
 function doSaveShizai(){var rows=document.querySelectorAll("#sz-rows .sz-item-wrap"),items=[];for(var i=0;i<rows.length;i++){items.push({name:rows[i].querySelector('[data-sz="name"]').value,qty:rows[i].querySelector('[data-sz="qty"]').value,unit:rows[i].querySelector('[data-sz="unit"]').value,price:rows[i].querySelector('[data-sz="price"]').value});}var pts=document.getElementById("sz-month").value.split("-"),ml=pts[0]+"年"+parseInt(pts[1])+"月";cacheInvalidate(['getShizaiSummary']);callGAS('saveShizaiRecord',{month:ml,items:items,recorder:document.getElementById("sz-recorder").value},'POST').then(function(r){toast("✅ "+r.message,"ok");document.querySelectorAll("#sz-rows .sz-name").forEach(function(e){e.value="";});document.querySelectorAll("#sz-rows .sz-qty").forEach(function(e){e.value="";});document.querySelectorAll("#sz-rows .sz-price").forEach(function(e){e.value="";});calcSzTotal();loadShizaiHistory();}).catch(function(e){toast("❌ "+(e.message||"エラー"),"ng");});}
@@ -533,11 +533,11 @@ function renderShizaiHistory(data){
     for(var j=0;j<m.items.length;j++){
       var it=m.items[j];
       _szMap[it.rowIndex]=it;
-      var dl=it.recordedDate?'<div style="font-size:10px;color:#5A8A5A;margin-bottom:2px;">📅 '+it.recordedDate+'</div>':'';
+      var dl=it.recordedDate?'<div style="font-size:10px;color:#9B6B72;margin-bottom:2px;">📅 '+it.recordedDate+'</div>':'';
       h+='<div class="sz-item" style="flex-direction:column;align-items:stretch;padding:10px 0;cursor:pointer;" onclick="openShizaiEditModal('+it.rowIndex+')">'+dl;
       h+='<div style="display:flex;justify-content:space-between;align-items:center;">';
       h+='<span>'+it.name+'　'+it.qty+it.unit+'</span>';
-      h+='<div style="display:flex;align-items:center;gap:8px;"><span style="color:#2D6A2D;font-weight:700;">'+it.price.toLocaleString()+' 円</span><span style="font-size:18px;color:#C0DCC0;">›</span></div>';
+      h+='<div style="display:flex;align-items:center;gap:8px;"><span style="color:#8B2635;font-weight:700;">'+it.price.toLocaleString()+' 円</span><span style="font-size:18px;color:#D4B8B8;">›</span></div>';
       h+='</div></div>';
     }
     h+='<div class="sz-total">合計 '+m.total.toLocaleString()+' 円</div></div></div>';
@@ -552,7 +552,7 @@ function openDayModalFromMonth(ds,lb){document.getElementById("month-modal-sheet
 function openDayModal(ds,lb){document.getElementById("day-modal-title").textContent="📅 "+lb+" の記録";document.getElementById("day-modal-body").innerHTML='<div class="ld">読み込み中...</div>';document.getElementById("day-modal").classList.add("open");document.body.style.overflow="hidden";callGAS('getDayDetail',{dateStr:ds}).then(renderDayDetail).catch(function(){document.getElementById("day-modal-body").innerHTML='<div class="em">読み込みエラー</div>';});}
 function closeDayModal(e){if(e.target===document.getElementById("day-modal"))closeDayModalBtn();}
 function closeDayModalBtn(){document.getElementById("day-modal").classList.remove("open");var ms=document.getElementById("month-modal-sheet");if(ms&&ms.style.display==="none")ms.style.display="";else document.body.style.overflow="";}
-function renderDayDetail(res){var body=document.getElementById("day-modal-body");if(!res||!res.success||!res.records.length){body.innerHTML='<div class="em">記録が見つかりません</div>';return;}var h='<p style="font-size:11px;color:#5A8A5A;padding:8px 16px 0;">号舎をタップして数値を修正→「保存」で確定</p>';for(var i=0;i<res.records.length;i++){var r=res.records[i];h+='<div class="rec-card"><div class="rec-card-h"><span>🏠 '+r.room+'</span><span class="rc-total" id="rt-'+r.rowIndex+'">'+r.total+' 個</span></div><div class="rec-card-body"><div class="rec-row"><label>普通卵</label><input class="rec-input" type="number" inputmode="numeric" id="rn-'+r.rowIndex+'" value="'+r.normalEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>ヒビ</label><input class="rec-input" type="number" inputmode="numeric" id="rh-'+r.rowIndex+'" value="'+r.hibiEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>規格外</label><input class="rec-input" type="number" inputmode="numeric" id="rk-'+r.rowIndex+'" value="'+r.kigaiEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>配合飼料</label><input class="rec-input" type="text" id="rf-'+r.rowIndex+'" value="'+r.feed+'"></div><div class="rec-row"><label>草・野菜</label><input class="rec-input" type="text" id="rg-'+r.rowIndex+'" value="'+r.grass+'"></div><div class="rec-row"><label>その他</label><input class="rec-input" type="text" id="ro-'+r.rowIndex+'" value="'+r.other+'"></div><div class="rec-row"><label>メモ</label><input class="rec-input" type="text" id="rm-'+r.rowIndex+'" value="'+r.memo+'"></div></div><button class="rec-save-btn" onclick="saveRecEdit('+r.rowIndex+',\''+r.room+'\')">✅ '+r.room+' を保存</button></div>';}body.innerHTML=h;}
+function renderDayDetail(res){var body=document.getElementById("day-modal-body");if(!res||!res.success||!res.records.length){body.innerHTML='<div class="em">記録が見つかりません</div>';return;}var h='<p style="font-size:11px;color:#9B6B72;padding:8px 16px 0;">号舎をタップして数値を修正→「保存」で確定</p>';for(var i=0;i<res.records.length;i++){var r=res.records[i];h+='<div class="rec-card"><div class="rec-card-h"><span>🏠 '+r.room+'</span><span class="rc-total" id="rt-'+r.rowIndex+'">'+r.total+' 個</span></div><div class="rec-card-body"><div class="rec-row"><label>普通卵</label><input class="rec-input" type="number" inputmode="numeric" id="rn-'+r.rowIndex+'" value="'+r.normalEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>ヒビ</label><input class="rec-input" type="number" inputmode="numeric" id="rh-'+r.rowIndex+'" value="'+r.hibiEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>規格外</label><input class="rec-input" type="number" inputmode="numeric" id="rk-'+r.rowIndex+'" value="'+r.kigaiEggs+'" onchange="updateRecTotal('+r.rowIndex+')"></div><div class="rec-row"><label>配合飼料</label><input class="rec-input" type="text" id="rf-'+r.rowIndex+'" value="'+r.feed+'"></div><div class="rec-row"><label>草・野菜</label><input class="rec-input" type="text" id="rg-'+r.rowIndex+'" value="'+r.grass+'"></div><div class="rec-row"><label>その他</label><input class="rec-input" type="text" id="ro-'+r.rowIndex+'" value="'+r.other+'"></div><div class="rec-row"><label>メモ</label><input class="rec-input" type="text" id="rm-'+r.rowIndex+'" value="'+r.memo+'"></div></div><button class="rec-save-btn" onclick="saveRecEdit('+r.rowIndex+',\''+r.room+'\')">✅ '+r.room+' を保存</button></div>';}body.innerHTML=h;}
 function updateRecTotal(ri){var n=Number(document.getElementById("rn-"+ri).value)||0,h=Number(document.getElementById("rh-"+ri).value)||0,k=Number(document.getElementById("rk-"+ri).value)||0,el=document.getElementById("rt-"+ri);if(el)el.textContent=(n+h+k)+" 個";}
 function saveRecEdit(ri,room){cacheInvalidate(['getMonthlyDailyRecords','getTodayRecords','getMonthlySummary','getDayDetail']);callGAS('updateEggRecord',{rowIndex:ri,normalEggs:document.getElementById("rn-"+ri).value,hibiEggs:document.getElementById("rh-"+ri).value,kigaiEggs:document.getElementById("rk-"+ri).value,feed:document.getElementById("rf-"+ri).value,grass:document.getElementById("rg-"+ri).value,other:document.getElementById("ro-"+ri).value,memo:document.getElementById("rm-"+ri).value},'POST').then(function(r){toast("✅ "+r.message,"ok");var el=document.getElementById("rt-"+ri);if(el)el.textContent=r.total+" 個";loadToday();}).catch(function(e){toast("❌ "+(e.message||"エラー"),"ng");});}
 var MILESTONES=[6000,7777,10000];
@@ -616,7 +616,7 @@ function showVsPreviewStep(){
     '<div class="vs-preview-field"><label>ヒビ</label><input class="vs-preview-inp brk" type="number" inputmode="numeric" id="vp-h" value="'+vsTemp.hibi+'"></div>'+
     '<div class="vs-preview-field"><label>規格外</label><input class="vs-preview-inp" type="number" inputmode="numeric" id="vp-k" value="'+vsTemp.kigai+'"></div>'+
     '</div>'+
-    '<div style="font-size:11px;color:#5A8A5A;margin-top:8px;text-align:center;">数字を直接タップして修正もできます</div>'+
+    '<div style="font-size:11px;color:#9B6B72;margin-top:8px;text-align:center;">数字を直接タップして修正もできます</div>'+
     '</div>'+
     '<div class="vs-preview-btns">'+
     '<button class="vs-preview-ok" onclick="confirmVsPreview()">✅ 記録する（計'+total+'個）</button>'+
@@ -692,15 +692,15 @@ function loadSaleHistory(){
 function renderSaleHistory(recs){
   var el=document.getElementById("sale-history");
   if(!recs||!recs.length){el.innerHTML='<div class="em" style="padding:24px 0;"><span style="font-size:36px;display:block;margin-bottom:8px;">🛒</span>今月の販売記録はまだないよ</div>';return;}
-  var h='<div style="font-size:13px;font-weight:800;color:#2D6A2D;margin-bottom:10px;">📋 今月の販売記録</div>';
+  var h='<div style="font-size:13px;font-weight:800;color:#8B2635;margin-bottom:10px;">📋 今月の販売記録</div>';
   for(var i=0;i<recs.length;i++){
     var r=recs[i];
-    h+='<div style="background:#fff;border:1.5px solid #C0DCC0;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
-    h+='<div><div style="font-size:14px;font-weight:800;color:#2D6A2D;">'+r.date+(r.buyer?' · '+r.buyer:'')+'</div>';
-    h+='<div style="font-size:11px;color:#5A8A5A;margin-top:3px;">'+r.qty+'個 × '+r.price.toLocaleString()+'円'+(r.channel?' · '+r.channel:'')+'</div>';
-    if(r.memo)h+='<div style="font-size:11px;color:#A0C0A0;margin-top:2px;">'+r.memo+'</div>';
+    h+='<div style="background:#fff;border:1.5px solid #D4B8B8;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+    h+='<div><div style="font-size:14px;font-weight:800;color:#8B2635;">'+r.date+(r.buyer?' · '+r.buyer:'')+'</div>';
+    h+='<div style="font-size:11px;color:#9B6B72;margin-top:3px;">'+r.qty+'個 × '+r.price.toLocaleString()+'円'+(r.channel?' · '+r.channel:'')+'</div>';
+    if(r.memo)h+='<div style="font-size:11px;color:#C4909A;margin-top:2px;">'+r.memo+'</div>';
     h+='</div>';
-    h+='<div style="text-align:right;flex-shrink:0;margin-left:8px;"><div style="font-size:22px;font-weight:800;color:#2D6A2D;">'+r.total.toLocaleString()+'</div><div style="font-size:11px;color:#5A8A5A;">円</div></div>';
+    h+='<div style="text-align:right;flex-shrink:0;margin-left:8px;"><div style="font-size:22px;font-weight:800;color:#8B2635;">'+r.total.toLocaleString()+'</div><div style="font-size:11px;color:#9B6B72;">円</div></div>';
     h+='</div>';
   }
   el.innerHTML=h;
