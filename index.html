@@ -11,8 +11,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
 <!--
   太田ファーム 養鶏記録アプリ — スマホ画面
-  index.html  v0.1.2  (2026-09-23)  フォントを Noto Sans JP に変更 / iPhoneで日付欄が2行に崩れる不具合を修正
-  バックエンド: GAS Code.gs v0.1.0（すべて POST / text/plain / JSON）
+  index.html  v0.1.3  (2026-09-23)
+    ・ロットを選ぶと入力画面を全画面に切り替え（入力中はメニュー帯を隠す）
+    ・「直す」を押した行を金色で強調し、ボタンを「直し中」に変更。入力欄まで自動で移動
+    ・画面全体を固定枠にして、iPhoneでメニュー帯が途中に浮く不具合を修正
+    ・確認ダイアログなどの改行を語句単位に（Safari対策）
+    ・卵トレーに入力回数（2回以上のとき）を表示
+    ・記録が見つからないときは黙らずにエラー表示
+  バックエンド: GAS Code.gs v0.1.0（変更なし）
   端末登録キー・管理者PINはソースに書かない（キーは端末の localStorage、PINはメモリのみ）
 -->
 <style>
@@ -22,7 +28,6 @@
   --cream:#FAF6EE; --paper:#FFFDF8; --tray:#EFE4CC;
   --ink:#3A2A1E; --sub:#6B5E52; --line:#E2D6BE;
   --warn-bg:#FBEBD3; --err:#A61B1B;
-  /* 文字サイズ：本文26px基準。補助情報のみ22px（1か所で変更可） */
   --fs:26px; --fs-s:22px; --fs-l:32px; --fs-num:48px;
   --tap:56px;
   --font:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Meiryo',sans-serif;
@@ -36,9 +41,10 @@ button{cursor:pointer;border:none;background:none;touch-action:manipulation}
 .hidden{display:none!important}
 .num{font-variant-numeric:tabular-nums}
 .meta{font-size:var(--fs-s);color:var(--sub)}
+.ph{display:inline-block;max-width:100%}
 
 /* ---------- 単独画面（起動・端末登録・入力者選択） ---------- */
-.solo{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+.solo{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
 .solo h1{font-size:var(--fs-l);color:var(--bordeaux);margin-bottom:12px;line-height:1.35}
 .solo p{margin-bottom:16px}
 .solo .farmname{font-size:var(--fs-s);color:var(--sub);margin-bottom:4px}
@@ -47,8 +53,11 @@ button{cursor:pointer;border:none;background:none;touch-action:manipulation}
 .staff-btn.on{border-color:var(--bordeaux)}
 .inline-err{color:var(--err);font-weight:700;font-size:var(--fs-s);margin-top:10px;min-height:1.5em}
 
+/* ---------- アプリ本体の枠（画面に固定。中身だけがスクロールする） ---------- */
+#scr-app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--cream)}
+
 /* ---------- ヘッダー ---------- */
-.top{position:sticky;top:0;z-index:20;background:var(--bordeaux);color:#fff;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 12px}
+.top{flex:none;z-index:20;background:var(--bordeaux);color:#fff;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 12px}
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{font-size:var(--fs-s);font-weight:700;white-space:nowrap}
 .who{min-height:48px;padding:4px 16px;border-radius:24px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.4);color:#fff;font-size:var(--fs-s);font-weight:700;max-width:64%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -61,8 +70,10 @@ button{cursor:pointer;border:none;background:none;touch-action:manipulation}
 .pastnote{margin-top:8px;background:var(--gold);color:var(--ink);border-radius:10px;padding:4px 12px;font-size:var(--fs-s);font-weight:700;text-align:center}
 .top.no-date .datebar,.top.no-date .pastnote{display:none}
 
-/* ---------- 本体 ---------- */
-main{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px));max-width:760px;margin:0 auto}
+/* ---------- 本体（ここだけスクロール） ---------- */
+main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:24px}
+#scr-app.inputting main{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.inner{max-width:760px;margin:0 auto}
 .lead{margin:18px 16px 0;font-weight:700}
 
 /* ロット選択：卵トレー */
@@ -73,20 +84,25 @@ main{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px));max-width:760p
 .egg{min-height:108px;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;background:var(--paper);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 2px 6px;box-shadow:0 3px 0 rgba(58,42,30,.14);transition:transform .12s}
 .egg b{font-size:30px;line-height:1.15}
 .egg small{font-size:20px;color:var(--sub);white-space:nowrap}
+.egg .cnt{font-size:17px;line-height:1.2}
 .egg.done{background:var(--gold);border-color:var(--gold)}
 .egg.done small{color:var(--ink);font-weight:700}
 .egg.sel{border-color:var(--bordeaux);border-width:5px;transform:translateY(-3px)}
 .egg.molt::after{content:'換羽';font-size:18px;color:var(--bordeaux);font-weight:700;line-height:1}
 @media (min-width:600px){.tray{grid-template-columns:repeat(5,1fr)}}
 
-/* 入力パネル */
-.panel{margin:20px 12px 8px;background:var(--paper);border-radius:20px;border-top:8px solid var(--bordeaux);padding:16px 16px 20px;box-shadow:0 2px 0 var(--line);scroll-margin-top:190px}
+/* 入力パネル（全画面） */
+.panel{margin:12px 12px 8px;background:var(--paper);border-radius:20px;border-top:8px solid var(--bordeaux);padding:10px 16px 20px;box-shadow:0 2px 0 var(--line)}
+.backbtn{display:flex;align-items:center;gap:6px;min-height:var(--tap);padding:0 10px;margin:0 -8px 6px;border-radius:14px;color:var(--bordeaux);font-size:var(--fs);font-weight:700}
+.backbtn:active{background:var(--gold-lt)}
 .panel h2{font-size:var(--fs-l);color:var(--bordeaux);line-height:1.3}
 .field{margin-top:18px}
 .field>label,.field>.lbl{display:block;font-weight:700;margin-bottom:6px}
 .bignum{width:100%;height:84px;text-align:center;font-size:var(--fs-num);font-weight:700;border:3px solid var(--line);border-radius:16px;background:#fff}
 .bignum.mid{height:68px;font-size:36px}
 .bignum:focus,.text:focus{border-color:var(--bordeaux);outline:none}
+.bignum.flash{animation:flash 1.2s ease-out}
+@keyframes flash{0%,40%{border-color:var(--gold);background:var(--gold-lt)}100%{border-color:var(--line);background:#fff}}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
 .step{height:var(--tap);border-radius:14px;background:var(--cream);border:2px solid var(--line);font-size:var(--fs);font-weight:700}
 .step.minus{color:var(--bordeaux)}
@@ -101,14 +117,16 @@ summary::-webkit-details-marker{display:none}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
 .chip{min-height:52px;padding:0 18px;border-radius:26px;border:2px solid var(--line);background:#fff;font-size:var(--fs-s);font-weight:700}
 .chip[aria-pressed="true"]{background:var(--bordeaux);border-color:var(--bordeaux);color:#fff}
-.editing{margin-top:12px;background:var(--warn-bg);border-radius:12px;padding:10px 14px;font-size:var(--fs-s);font-weight:700}
+.editing{margin-top:12px;background:var(--warn-bg);border-left:8px solid var(--gold);border-radius:12px;padding:10px 14px;font-size:var(--fs-s);font-weight:700}
 .exist{margin-top:12px;border-radius:14px;background:var(--gold-lt);padding:8px 12px}
 .exist-title{font-size:var(--fs-s);font-weight:700}
 .exist-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(58,42,30,.12)}
 .exist-item:first-of-type{border-top:none}
-.exist-item.on{font-weight:700}
+.exist-item.on{background:var(--paper);border:3px solid var(--gold);border-radius:12px;padding:8px 10px;margin:4px -6px;font-weight:700}
 .exist-item .meta{display:block}
-.mini{min-height:52px;min-width:88px;padding:0 14px;border-radius:14px;background:var(--paper);border:2px solid var(--bordeaux);color:var(--bordeaux);font-size:var(--fs-s);font-weight:700}
+.mini{min-height:52px;min-width:96px;padding:0 14px;border-radius:14px;background:var(--paper);border:2px solid var(--bordeaux);color:var(--bordeaux);font-size:var(--fs-s);font-weight:700}
+.mini:active{background:var(--gold-lt)}
+.mini.now{background:var(--gold);border-color:var(--gold);color:var(--ink)}
 .actions{display:grid;gap:10px;margin-top:22px}
 .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:68px;border-radius:18px;font-size:var(--fs-l);font-weight:700;text-align:center;padding:0 12px}
 .btn.primary{background:var(--bordeaux);color:#fff;box-shadow:0 4px 0 var(--bordeaux-dk)}
@@ -146,8 +164,9 @@ summary::-webkit-details-marker{display:none}
 .hist .act{display:inline-block;font-size:20px;border-radius:8px;padding:0 8px;margin-right:6px;background:var(--gold-lt)}
 .hist .act.delete{background:var(--err);color:#fff}
 
-/* ボトムナビ */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper);border-top:3px solid var(--gold);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* ボトムナビ（固定枠の最下段。position:fixed は使わない） */
+.tabs{flex:none;position:relative;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper);border-top:3px solid var(--gold);padding-bottom:env(safe-area-inset-bottom,0px)}
+#scr-app.inputting .tabs{display:none}
 .tab{min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--sub);font-size:var(--fs-s);font-weight:700}
 .tab svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .tab[aria-current="page"]{color:var(--bordeaux);background:var(--gold-lt)}
@@ -161,8 +180,7 @@ summary::-webkit-details-marker{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .dlg-back{position:fixed;inset:0;z-index:80;background:rgba(58,42,30,.5);display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
 .dlg{width:100%;max-width:560px;background:var(--paper);border-radius:22px;padding:20px 18px}
-.dlg h2{font-size:var(--fs-l);color:var(--bordeaux);line-height:1.3;margin-bottom:10px}
-.dlg p{white-space:pre-line}
+.dlg h2{font-size:var(--fs-l);color:var(--bordeaux);line-height:1.35;margin-bottom:10px}
 .dlg .actions{margin-top:18px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.spin{border-top-color:var(--gold-lt)}}
 </style>
@@ -213,16 +231,20 @@ summary::-webkit-details-marker{display:none}
     <p id="pastNote" class="pastnote hidden">今日ではない日付に記録します</p>
   </header>
 
-  <main>
+  <main id="mainScroll">
+   <div class="inner">
     <!-- 産卵入力 -->
     <section id="tab-egg" class="tabpane">
-      <p class="lead">ロットを選んでください</p>
-      <div id="eggTray"></div>
+      <div id="eggPick">
+        <p class="lead">ロットを選んでください</p>
+        <div id="eggTray"></div>
+      </div>
       <div id="eggPanel" class="panel hidden">
+        <button id="eggBack" class="backbtn">◀ ロット一覧へ戻る</button>
         <h2 id="eggLotTitle"></h2>
         <p id="eggLotMeta" class="meta"></p>
         <div id="eggExist"></div>
-        <p id="eggEditing" class="editing hidden">入力済みの記録を直しています。保存すると上書きされます。</p>
+        <p id="eggEditing" class="editing hidden"></p>
 
         <div class="field">
           <label for="eggCount">産卵数（個）</label>
@@ -273,20 +295,23 @@ summary::-webkit-details-marker{display:none}
           <button id="eggSave" class="btn primary">保存する</button>
           <button id="eggCancel" class="btn ghost hidden">直すのをやめる</button>
           <button id="eggDelete" class="btn danger hidden">この記録を削除する</button>
-          <button id="eggClose" class="btn ghost">閉じる</button>
+          <button id="eggClose" class="btn ghost">ロット一覧へ戻る</button>
         </div>
       </div>
     </section>
 
     <!-- 死廃入力 -->
     <section id="tab-death" class="tabpane hidden">
-      <p class="lead">ロットを選んでください</p>
-      <div id="deathTray"></div>
+      <div id="deathPick">
+        <p class="lead">ロットを選んでください</p>
+        <div id="deathTray"></div>
+      </div>
       <div id="deathPanel" class="panel hidden">
+        <button id="deathBack" class="backbtn">◀ ロット一覧へ戻る</button>
         <h2 id="deathLotTitle"></h2>
         <p id="deathLotMeta" class="meta"></p>
         <div id="deathExist"></div>
-        <p id="deathEditing" class="editing hidden">入力済みの記録を直しています。保存すると上書きされます。</p>
+        <p id="deathEditing" class="editing hidden"></p>
 
         <div class="field">
           <label for="deadCount">死亡（羽）</label>
@@ -325,7 +350,7 @@ summary::-webkit-details-marker{display:none}
           <button id="deathSave" class="btn primary">保存する</button>
           <button id="deathCancel" class="btn ghost hidden">直すのをやめる</button>
           <button id="deathDelete" class="btn danger hidden">この記録を削除する</button>
-          <button id="deathClose" class="btn ghost">閉じる</button>
+          <button id="deathClose" class="btn ghost">ロット一覧へ戻る</button>
         </div>
       </div>
     </section>
@@ -370,6 +395,7 @@ summary::-webkit-details-marker{display:none}
         <button id="unregBtn" class="btn danger">この端末の登録を解除する</button>
       </div>
     </section>
+   </div>
   </main>
 
   <nav class="tabs" aria-label="画面の切り替え">
@@ -410,7 +436,7 @@ summary::-webkit-details-marker{display:none}
 const CONFIG = {
   // ※GAS「デプロイを管理」から末尾まで再コピーして貼り替えること
   APP_URL: 'https://script.google.com/macros/s/AKfycbxI9H45javTzvENCldrMK3-Mkp14Jf8foAD-5B0mGaKzgT0VfQ1jJ7W6tcg8tioqSZ4SQ/exec',
-  APP_VERSION: '0.1.2',
+  APP_VERSION: '0.1.3',
   TIMEOUT_MS: 30000,
   EGG_DIFF_WARN: 0.15,           // 前日比 ±15%以上で確認を出す（数字の提示のみ・解釈はしない）
   REBOOT_AFTER_MS: 60 * 60 * 1000, // 1時間以上たって画面に戻ったらマスタ・今日の日付を取り直す
@@ -430,8 +456,8 @@ const FIELD_JA = {
   collectTime: '集卵時刻', note: 'メモ', deadCount: '死亡', culledCount: '淘汰', cause: '原因', staffId: '入力者'
 };
 const KIND = {
-  egg:   { sheet: 'eggRecords',   tray: 'eggTray',   panel: 'eggPanel' },
-  death: { sheet: 'deathRecords', tray: 'deathTray', panel: 'deathPanel' }
+  egg:   { sheet: 'eggRecords',   tray: 'eggTray',   pick: 'eggPick',   panel: 'eggPanel',   first: 'eggCount' },
+  death: { sheet: 'deathRecords', tray: 'deathTray', pick: 'deathPick', panel: 'deathPanel', first: 'deadCount' }
 };
 
 // ============================================================
@@ -442,11 +468,13 @@ const S = {
   tab: 'egg', date: null,
   eggs: [], eggsPrev: [], deaths: [], dayLoading: false, dayToken: 0,
   sel: { egg: null, death: null }, edit: { egg: null, death: null },
+  trayScroll: { egg: 0, death: 0 },
   summary: null, summaryDate: null,
   admin: null, histLimit: CONFIG.HISTORY_PAGE, busy: false
 };
 
 const $ = function (id) { return document.getElementById(id); };
+const mainEl = $('mainScroll');
 const ls = {
   get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -536,6 +564,12 @@ function esc(v) {
   return String(v === null || v === undefined ? '' : v)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+// 語句単位で折り返す（'|' で語句を区切り、'\n' で改行）。iPhoneのSafariで単語の途中で折れるのを防ぐ
+function phr(s) {
+  return String(s).split('\n').map(function (line) {
+    return line.split('|').map(function (x) { return x === '' ? '' : '<span class="ph">' + esc(x) + '</span>'; }).join('');
+  }).join('<br>');
+}
 function fmt(n) { return (n === null || n === undefined || n === '') ? '—' : Number(n).toLocaleString('ja-JP'); }
 function lotOf(id) { return (S.boot.lots || []).find(function (l) { return l.lotId === id; }) || null; }
 function lotLabel(id) { const l = lotOf(id); return l ? l.lotName : id; }
@@ -545,6 +579,7 @@ function staffName(id) {
 }
 function me() { return (S.boot && S.boot.staff || []).find(function (s) { return s.staffId === S.staffId; }) || null; }
 function openLots() { return (S.boot.lots || []).filter(function (l) { return l.status !== 'closed'; }); }
+function sameId(a, b) { return String(a) === String(b); }
 
 let toastTimer = null;
 function toast(msg, type) {
@@ -559,10 +594,11 @@ $('toast').addEventListener('click', function () { this.classList.add('hidden');
 function showLoading(msg) { $('loadingMsg').textContent = msg; $('loading').classList.remove('hidden'); }
 function hideLoading() { $('loading').classList.add('hidden'); }
 
+// title / body は '|' で語句区切り、'\n' で改行
 function confirmDlg(o) {
   return new Promise(function (resolve) {
-    $('dlgTitle').textContent = o.title;
-    $('dlgBody').textContent = o.body || '';
+    $('dlgTitle').innerHTML = phr(o.title);
+    $('dlgBody').innerHTML = phr(o.body || '');
     $('dlgOk').textContent = o.ok || 'はい';
     $('dlgCancel').textContent = o.cancel || 'やめる';
     $('dlgOk').className = 'btn ' + (o.danger ? 'danger' : 'primary');
@@ -586,6 +622,17 @@ function showScreen(name) {
   });
   window.scrollTo(0, 0);
 }
+
+// 入力中はメニュー帯を隠す
+function updateMode() {
+  $('scr-app').classList.toggle('inputting', !!(KIND[S.tab] && S.sel[S.tab]));
+}
+
+// iPhoneでキーボードを閉じたあと画面がずれたまま残るのを戻す
+document.addEventListener('focusout', function () {
+  if ($('scr-app').classList.contains('hidden')) return;
+  setTimeout(function () { if (window.scrollY !== 0) window.scrollTo(0, 0); }, 60);
+});
 
 // ============================================================
 // 起動
@@ -719,9 +766,10 @@ function switchTab(tab) {
   });
   $('top').classList.toggle('no-date', tab === 'admin');
   renderHeader();
+  updateMode();
   if (tab === 'list') loadSummary();
   if (tab === 'admin') renderAdmin();
-  window.scrollTo(0, 0);
+  mainEl.scrollTop = 0;
 }
 document.querySelectorAll('.tab').forEach(function (b) {
   b.addEventListener('click', function () { switchTab(b.dataset.tab); });
@@ -793,9 +841,10 @@ function renderTray(kind) {
       else if (!done) sub = '未入力';
       else if (kind === 'egg') sub = fmt(sumOf(recs, 'eggCount'));
       else sub = (sumOf(recs, 'deadCount') + sumOf(recs, 'culledCount')) + '羽';
+      const cnt = (!S.dayLoading && recs.length > 1) ? '<small class="cnt">（' + recs.length + '回）</small>' : '';
       const cls = 'egg' + (done ? ' done' : '') + (S.sel[kind] === l.lotId ? ' sel' : '') + (l.status === 'molting' ? ' molt' : '');
       return '<button class="' + cls + '" data-lot="' + esc(l.lotId) + '" data-kind="' + kind + '" aria-pressed="' + (S.sel[kind] === l.lotId) + '">' +
-        '<b>' + esc(l.lotName) + '</b><small class="num">' + esc(sub) + '</small></button>';
+        '<b>' + esc(l.lotName) + '</b><small class="num">' + esc(sub) + '</small>' + cnt + '</button>';
     }).join('');
     return '<div class="farm"><h3>' + esc(f.name) + '</h3><span class="num">' +
       (S.dayLoading ? '' : doneN + ' / ' + f.lots.length + ' 入力済み') + '</span></div>' +
@@ -809,29 +858,45 @@ document.addEventListener('click', function (e) {
   selectLot(b.dataset.kind, b.dataset.lot);
 });
 
+// ロットを選ぶ → 入力画面に全画面で切り替え
 function selectLot(kind, lotId) {
+  if (!S.sel[kind]) S.trayScroll[kind] = mainEl.scrollTop;
   S.sel[kind] = lotId;
   S.edit[kind] = null;
   clearForm(kind);
   renderTray(kind);
   renderPanel(kind);
-  const p = $(KIND[kind].panel);
-  p.classList.remove('hidden');
-  setTimeout(function () { p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+  $(KIND[kind].pick).classList.add('hidden');
+  $(KIND[kind].panel).classList.remove('hidden');
+  updateMode();
+  mainEl.scrollTop = 0;
 }
 
+// ロット一覧へ戻る
 function closePanel(kind) {
+  const wasOpen = !!S.sel[kind];
   S.sel[kind] = null; S.edit[kind] = null;
   clearForm(kind);
   $(KIND[kind].panel).classList.add('hidden');
+  $(KIND[kind].pick).classList.remove('hidden');
   renderTray(kind);
+  updateMode();
+  if (wasOpen && kind === S.tab) mainEl.scrollTop = S.trayScroll[kind] || 0;
 }
-$('eggClose').addEventListener('click', function () { closePanel('egg'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-$('deathClose').addEventListener('click', function () { closePanel('death'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+['egg', 'death'].forEach(function (k) {
+  $(k + 'Close').addEventListener('click', function () { closePanel(k); });
+  $(k + 'Back').addEventListener('click', function () { closePanel(k); });
+});
 
 // ============================================================
 // 入力パネル
 // ============================================================
+function recDesc(kind, r) {
+  return kind === 'egg'
+    ? fmt(r.eggCount) + '個' + (Number(r.brokenCount) ? '（破損' + fmt(r.brokenCount) + '）' : '')
+    : '死亡' + fmt(r.deadCount || 0) + '羽 淘汰' + fmt(r.culledCount || 0) + '羽';
+}
+
 function renderPanel(kind) {
   const lot = lotOf(S.sel[kind]);
   if (!lot) return;
@@ -843,12 +908,10 @@ function renderPanel(kind) {
   const ed = S.edit[kind];
   $(kind + 'Exist').innerHTML = recs.length
     ? '<div class="exist"><p class="exist-title">この日の入力済み</p>' + recs.map(function (r) {
-        const main = kind === 'egg'
-          ? fmt(r.eggCount) + '個' + (Number(r.brokenCount) ? '（破損' + fmt(r.brokenCount) + '）' : '')
-          : '死亡' + fmt(r.deadCount || 0) + '羽 淘汰' + fmt(r.culledCount || 0) + '羽';
-        return '<div class="exist-item' + (ed && ed.recordId === r.recordId ? ' on' : '') + '"><div class="num">' + esc(main) +
+        const on = !!(ed && sameId(ed.recordId, r.recordId));
+        return '<div class="exist-item' + (on ? ' on' : '') + '"><div class="num">' + esc(recDesc(kind, r)) +
           '<span class="meta">' + esc(staffName(r.staffId)) + ' ' + esc(String(r.createdAt).slice(11, 16)) + '</span></div>' +
-          '<button class="mini" data-edit="' + kind + ':' + esc(r.recordId) + '">直す</button></div>';
+          '<button class="mini' + (on ? ' now' : '') + '" data-edit="' + kind + ':' + esc(String(r.recordId)) + '">' + (on ? '直し中' : '直す') + '</button></div>';
       }).join('') + '</div>'
     : '';
 
@@ -858,7 +921,9 @@ function renderPanel(kind) {
     $('eggRef').textContent = prev.length ? '前の日：' + fmt(sumOf(prev, 'eggCount')) + '個' : '前の日の入力はありません';
   }
 
-  $(kind + 'Editing').classList.toggle('hidden', !ed);
+  const banner = $(kind + 'Editing');
+  banner.innerHTML = ed ? phr(recDesc(kind, ed) + 'の記録を|直しています。|保存すると|上書きされます。') : '';
+  banner.classList.toggle('hidden', !ed);
   $(kind + 'Save').textContent = ed ? '上書き保存する' : '保存する';
   $(kind + 'Cancel').classList.toggle('hidden', !ed);
   $(kind + 'Delete').classList.toggle('hidden', !(ed && S.admin));
@@ -872,8 +937,12 @@ document.addEventListener('click', function (e) {
 });
 
 function startEdit(kind, id) {
-  const rec = (kind === 'egg' ? S.eggs : S.deaths).find(function (r) { return r.recordId === id; });
-  if (!rec) return;
+  const rec = (kind === 'egg' ? S.eggs : S.deaths).find(function (r) { return sameId(r.recordId, id); });
+  if (!rec) {
+    toast('この記録を開けませんでした。画面を読み込み直します', 'err');
+    loadDay();
+    return;
+  }
   S.edit[kind] = rec;
   if (kind === 'egg') {
     $('eggCount').value = rec.eggCount === '' ? '' : rec.eggCount;
@@ -890,6 +959,13 @@ function startEdit(kind, id) {
     syncChips();
   }
   renderPanel(kind);
+  buzz();
+
+  // 押したことが目に見えるように：入力欄を光らせ、「直しています」の帯まで移動
+  const f = $(KIND[kind].first);
+  f.classList.remove('flash'); void f.offsetWidth; f.classList.add('flash');
+  const banner = $(kind + 'Editing');
+  setTimeout(function () { banner.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
 }
 
 function clearForm(kind) {
@@ -902,8 +978,8 @@ function clearForm(kind) {
   }
 }
 
-$('eggCancel').addEventListener('click', function () { S.edit.egg = null; clearForm('egg'); renderPanel('egg'); });
-$('deathCancel').addEventListener('click', function () { S.edit.death = null; clearForm('death'); renderPanel('death'); });
+$('eggCancel').addEventListener('click', function () { S.edit.egg = null; clearForm('egg'); renderPanel('egg'); mainEl.scrollTop = 0; });
+$('deathCancel').addEventListener('click', function () { S.edit.death = null; clearForm('death'); renderPanel('death'); mainEl.scrollTop = 0; });
 
 // ---------- 数値入力（全角数字も受け付ける） ----------
 function toHalf(s) {
@@ -966,13 +1042,13 @@ $('cause').addEventListener('input', syncChips);
 // ============================================================
 function upsertLocal(kind, rec) {
   const arr = kind === 'egg' ? S.eggs : S.deaths;
-  const i = arr.findIndex(function (r) { return r.recordId === rec.recordId; });
+  const i = arr.findIndex(function (r) { return sameId(r.recordId, rec.recordId); });
   if (i >= 0) arr[i] = rec; else arr.unshift(rec);
   S.summaryDate = null;
 }
 function removeLocal(kind, id) {
   const arr = kind === 'egg' ? S.eggs : S.deaths;
-  const i = arr.findIndex(function (r) { return r.recordId === id; });
+  const i = arr.findIndex(function (r) { return sameId(r.recordId, id); });
   if (i >= 0) arr.splice(i, 1);
   S.summaryDate = null;
 }
@@ -990,7 +1066,6 @@ async function saveRecord(kind, data) {
     buzz();
     toast((ed ? '上書き保存しました：' : '保存しました：') + lotLabel(data.lotId), 'ok');
     closePanel(kind);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (err) {
     handleErr(err); // 入力内容は消さずに残す
   } finally { S.busy = false; }
@@ -1018,8 +1093,8 @@ $('eggSave').addEventListener('click', async function () {
   // 同じ日に入力済み → 追加でよいか確認
   if (!ed && cur.length) {
     const ok = await confirmDlg({
-      title: name + ' はこの日すでに入力済みです',
-      body: '入力済み：' + fmt(sumOf(cur, 'eggCount')) + '個\n\n2回目の集卵なら「追加する」。\n数字の間違いなら「やめる」を押して、上の「直す」から直してください。',
+      title: name + ' は|この日|入力済みです',
+      body: '入力済み：' + fmt(sumOf(cur, 'eggCount')) + '個\n\n2回目の集卵なら|「追加する」\n数字の間違いなら|「やめる」を押して、|上の「直す」から|直してください。',
       ok: '追加する', cancel: 'やめる'
     });
     if (!ok) return;
@@ -1033,8 +1108,8 @@ $('eggSave').addEventListener('click', async function () {
     if (Math.abs(diff) >= CONFIG.EGG_DIFF_WARN) {
       const pct = Math.round(diff * 1000) / 10;
       const ok = await confirmDlg({
-        title: '前の日と数字が大きく違います',
-        body: name + '\n前の日：' + fmt(prevSum) + '個\nこの日：' + fmt(dayTotal) + '個（' + (pct > 0 ? '+' : '') + pct + '%）\n\n数字に間違いがなければ保存してください。',
+        title: '前の日と|数字が|大きく違います',
+        body: name + '\n前の日：' + fmt(prevSum) + '個\nこの日：' + fmt(dayTotal) + '個|（' + (pct > 0 ? '+' : '') + pct + '%）\n\n数字に間違いがなければ|保存してください。',
         ok: 'このまま保存する', cancel: '数字を見直す'
       });
       if (!ok) { $('eggCount').focus(); return; }
@@ -1060,8 +1135,8 @@ $('deathSave').addEventListener('click', async function () {
   const cur = recordsFor('death', lotId);
   if (!ed && cur.length) {
     const ok = await confirmDlg({
-      title: lotLabel(lotId) + ' はこの日すでに入力済みです',
-      body: '入力済み：' + (sumOf(cur, 'deadCount') + sumOf(cur, 'culledCount')) + '羽\n\n追加分なら「追加する」。\n数字の間違いなら「やめる」を押して、上の「直す」から直してください。',
+      title: lotLabel(lotId) + ' は|この日|入力済みです',
+      body: '入力済み：' + (sumOf(cur, 'deadCount') + sumOf(cur, 'culledCount')) + '羽\n\n追加分なら|「追加する」\n数字の間違いなら|「やめる」を押して、|上の「直す」から|直してください。',
       ok: '追加する', cancel: 'やめる'
     });
     if (!ok) return;
@@ -1077,10 +1152,9 @@ $('deathSave').addEventListener('click', async function () {
 async function deleteRecord(kind) {
   const ed = S.edit[kind];
   if (!ed || !S.admin || S.busy) return;
-  const desc = kind === 'egg' ? fmt(ed.eggCount) + '個' : '死亡' + fmt(ed.deadCount || 0) + '羽 淘汰' + fmt(ed.culledCount || 0) + '羽';
   const ok = await confirmDlg({
-    title: 'この記録を削除しますか？',
-    body: lotLabel(ed.lotId) + ' ' + fmtDate(ed.date) + '\n' + desc + '\n\n削除した記録は、管理タブの履歴から元に戻せます。',
+    title: 'この記録を|削除しますか？',
+    body: lotLabel(ed.lotId) + ' ' + fmtDate(ed.date) + '\n' + recDesc(kind, ed) + '\n\n削除した記録は、|管理タブの履歴から|元に戻せます。',
     ok: '削除する', cancel: 'やめる', danger: true
   });
   if (!ok) return;
@@ -1256,7 +1330,7 @@ $('histList').addEventListener('click', async function (e) {
   const b = e.target.closest('[data-restore]');
   if (!b || S.busy) return;
   const p = b.dataset.restore.split('|');
-  const ok = await confirmDlg({ title: 'この記録を元に戻しますか？', body: '削除した記録が、もう一度一覧に表示されるようになります。', ok: '元に戻す', cancel: 'やめる' });
+  const ok = await confirmDlg({ title: 'この記録を|元に戻しますか？', body: '削除した記録が、|もう一度一覧に|表示されるようになります。', ok: '元に戻す', cancel: 'やめる' });
   if (!ok) return;
   S.busy = true;
   try {
@@ -1271,8 +1345,8 @@ $('histList').addEventListener('click', async function (e) {
 
 $('unregBtn').addEventListener('click', async function () {
   const ok = await confirmDlg({
-    title: 'この端末の登録を解除しますか？',
-    body: 'もう一度使うには、登録キーの入力が必要になります。記録したデータは消えません。',
+    title: 'この端末の|登録を|解除しますか？',
+    body: 'もう一度使うには、|登録キーの入力が|必要になります。\n記録したデータは|消えません。',
     ok: '解除する', cancel: 'やめる', danger: true
   });
   if (!ok) return;
