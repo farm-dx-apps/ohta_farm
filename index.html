@@ -13,6 +13,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
 <!--
   太田ファーム 養鶏記録アプリ — スマホ画面
+  index.html  v0.1.5  (2026-10-19)
+    ・表記を太田ファームの言葉に（死廃→死鶏、死亡→死鶏、破損卵→破卵）
+    ・淘汰の欄を削除（淘汰はしないため）。入力済みの表示に原因を出す（「淘汰0羽」が原因に見えていた）
+    ・死鶏の原因に「害獣」を追加、「病気の疑い」→「病気」
+    ・死鶏0羽でも保存できるように（新規・直す）。空欄はエラー
+    ・死鶏が多すぎるとき（産卵数の入れ間違いなど）に保存前の確認を出す
+    ・破卵の空欄は「未記録」として空欄のまま保存（0に変えない）
+    ・卵重は「トレーごとの重さ（kg）」を入力 → (重さ − トレー0.15kg×7) ÷ 180 で1個あたりを自動計算
+    ・集卵時刻を最初から表示し、「いまの時刻」ボタンを追加
+    ・産卵数が羽数を超えたら保存前の確認を出す（集卵時刻が空なら入力を促す）
   index.html  v0.1.4  (2026-10-04)
     ・削除ボタンを「直す」画面の最下部に分けて配置。管理者がPIN未入力のときは入れ方を案内
     ・「元に戻す」の確認にロット・日付・数値を表示。すでに復元済みの削除行には出さない
@@ -26,7 +36,7 @@
     ・空欄で −10 などを押しても何もしない（0 が入って入力済みに見えるのを防ぐ）
     ・横向き・PCで左右の欠け、高さ不足を修正
     ・CSP を追加（通信先を GAS のみに限定）
-  バックエンド: GAS Code.gs v0.1.5（v0.1.4 でも動く）
+  バックエンド: GAS Code.gs v0.1.7 が必要（死鶏0羽の新規保存・破卵の未記録の扱い）
   端末登録キー・管理者PINはソースに書かない（キーは端末の localStorage、PINはメモリのみ）
   利用者の入力を画面に出すときは textContent か esc() を必ず通すこと
 -->
@@ -132,6 +142,8 @@ summary{min-height:var(--tap);display:flex;align-items:center;font-weight:700;co
 summary::before{content:'＋';margin-right:8px}
 details[open] summary::before{content:'－'}
 summary::-webkit-details-marker{display:none}
+.timerow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.calc{margin-top:8px;font-size:var(--fs);font-weight:700;color:var(--bordeaux)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
 .chip{min-height:52px;padding:0 18px;border-radius:26px;border:2px solid var(--line);background:#fff;font-size:var(--fs-s);font-weight:700}
 .chip[aria-pressed="true"]{background:var(--bordeaux);border-color:var(--bordeaux);color:#fff}
@@ -289,8 +301,8 @@ summary::-webkit-details-marker{display:none}
         </div>
 
         <div class="field">
-          <label for="brokenCount">破損卵（個）</label>
-          <input id="brokenCount" class="bignum mid num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="数字を入力" data-kind="int">
+          <label for="brokenCount">破卵（個）</label>
+          <input id="brokenCount" class="bignum mid num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="記録しないときは空欄" data-kind="int">
           <div class="steps">
             <button class="step minus" data-step="brokenCount:-10">−10</button>
             <button class="step minus" data-step="brokenCount:-1">−1</button>
@@ -300,22 +312,23 @@ summary::-webkit-details-marker{display:none}
           <p id="err-brokenCount" class="ferr hidden" role="alert"></p>
         </div>
 
-        <details id="eggMore">
-          <summary>卵重・集卵時刻・メモ</summary>
-          <div class="field">
-            <label for="avgEggWeight">平均卵重（g）</label>
-            <input id="avgEggWeight" class="bignum mid num" type="text" inputmode="decimal" autocomplete="off" placeholder="—" data-kind="dec">
-            <div class="steps">
-              <button class="step minus" data-step="avgEggWeight:-1">−1</button>
-              <button class="step minus" data-step="avgEggWeight:-0.1">−0.1</button>
-              <button class="step" data-step="avgEggWeight:0.1">＋0.1</button>
-              <button class="step" data-step="avgEggWeight:1">＋1</button>
-            </div>
-            <p id="err-avgEggWeight" class="ferr hidden" role="alert"></p>
-          </div>
-          <div class="field">
-            <label for="collectTime">集卵時刻</label>
+        <div class="field">
+          <label for="collectTime">集卵を終えた時刻</label>
+          <div class="timerow">
             <input id="collectTime" class="text" type="time">
+            <button id="collectNow" class="mini" type="button">いまの時刻</button>
+          </div>
+          <p id="err-collectTime" class="ferr hidden" role="alert"></p>
+        </div>
+
+        <details id="eggMore">
+          <summary>卵重・メモ</summary>
+          <div class="field">
+            <label for="trayWeight">卵重：トレーごとの重さ（kg）</label>
+            <p class="meta">アメトレ6段（180個）・トレー7枚込みで量った重さ</p>
+            <input id="trayWeight" class="bignum mid num" type="text" inputmode="decimal" autocomplete="off" placeholder="例 12.30" data-kind="dec2">
+            <p id="err-trayWeight" class="ferr hidden" role="alert"></p>
+            <p id="eggWeightOut" class="calc num">1個あたり：—</p>
           </div>
           <div class="field">
             <label for="eggNote">メモ</label>
@@ -335,7 +348,7 @@ summary::-webkit-details-marker{display:none}
       </div>
     </section>
 
-    <!-- 死廃入力 -->
+    <!-- 死鶏入力 -->
     <section id="tab-death" class="tabpane hidden">
       <div id="deathPick">
         <p class="lead">ロットを選んでください</p>
@@ -349,8 +362,8 @@ summary::-webkit-details-marker{display:none}
         <p id="deathEditing" class="editing hidden"></p>
 
         <div class="field">
-          <label for="deadCount">死亡（羽）</label>
-          <input id="deadCount" class="bignum num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="0" data-kind="int">
+          <label for="deadCount">死鶏（羽）</label>
+          <input id="deadCount" class="bignum num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="いなければ 0" data-kind="int">
           <div class="steps">
             <button class="step minus" data-step="deadCount:-10">−10</button>
             <button class="step minus" data-step="deadCount:-1">−1</button>
@@ -358,18 +371,6 @@ summary::-webkit-details-marker{display:none}
             <button class="step" data-step="deadCount:10">＋10</button>
           </div>
           <p id="err-deadCount" class="ferr hidden" role="alert"></p>
-        </div>
-
-        <div class="field">
-          <label for="culledCount">淘汰（羽）</label>
-          <input id="culledCount" class="bignum num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="0" data-kind="int">
-          <div class="steps">
-            <button class="step minus" data-step="culledCount:-10">−10</button>
-            <button class="step minus" data-step="culledCount:-1">−1</button>
-            <button class="step" data-step="culledCount:1">＋1</button>
-            <button class="step" data-step="culledCount:10">＋10</button>
-          </div>
-          <p id="err-culledCount" class="ferr hidden" role="alert"></p>
         </div>
 
         <div class="field">
@@ -423,7 +424,7 @@ summary::-webkit-details-marker{display:none}
 
       <div id="admOpen" class="card hidden">
         <h3>変更の履歴</h3>
-        <p class="meta">入力・修正・削除がすべて残ります。削除した記録は「元に戻す」で復元できます。記録を削除するには、産卵入力・死廃入力で「直す」を押すと、画面のいちばん下に削除ボタンが出ます。</p>
+        <p class="meta">入力・修正・削除がすべて残ります。削除した記録は「元に戻す」で復元できます。記録を削除するには、産卵入力・死鶏入力で「直す」を押すと、画面のいちばん下に削除ボタンが出ます。</p>
         <div id="histList" style="margin-top:8px"></div>
         <button id="histMore" class="btn ghost hidden">もっと見る</button>
         <button id="admLock" class="btn ghost">管理者メニューを閉じる</button>
@@ -443,7 +444,7 @@ summary::-webkit-details-marker{display:none}
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c-5.5 0-10 8.6-10 15a10 10 0 0 0 20 0C26 11.6 21.5 3 16 3z"/></svg>産卵入力
     </button>
     <button class="tab" data-tab="death">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26c2-9 7-16 17-20-1 9-6 15-14 17"/><path d="M8 26l7-9"/></svg>死廃入力
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26c2-9 7-16 17-20-1 9-6 15-14 17"/><path d="M8 26l7-9"/></svg>死鶏入力
     </button>
     <button class="tab" data-tab="list">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 8h15M11 16h15M11 24h15"/><path d="M5 8h1M5 16h1M5 24h1"/></svg>一覧
@@ -477,9 +478,13 @@ summary::-webkit-details-marker{display:none}
 const CONFIG = {
   // ※GAS「デプロイを管理」から末尾まで再コピーして貼り替えること
   APP_URL: 'https://script.google.com/macros/s/AKfycbxI9H45javTzvENCldrMK3-Mkp14Jf8foAD-5B0mGaKzgT0VfQ1jJ7W6tcg8tioqSZ4SQ/exec',
-  APP_VERSION: '0.1.4',
+  APP_VERSION: '0.1.5',
   TIMEOUT_MS: 30000,
   EGG_DIFF_WARN: 0.15,             // 前日比 ±15%以上で確認を出す（数字の提示のみ・解釈はしない）
+  DEAD_WARN: 30,                   // 死鶏がこの羽数以上なら確認を出す（産卵数の入れ間違い対策）
+  // 卵重：(トレーごとの重さkg − トレー1枚kg × 枚数) ÷ 個数 × 1000 = 1個あたりg
+  TRAY_KG: 0.15, TRAY_SHEETS: 7, TRAY_EGGS: 180,
+  EGG_G_MIN: 30, EGG_G_MAX: 90,    // 計算結果がこの範囲外なら重さの見直しを求める
   REBOOT_AFTER_MS: 60 * 60 * 1000, // 1時間以上たって画面に戻ったらマスタ・今日の日付を取り直す
   REFRESH_MIN_MS: 5000,            // 裏での取り直しは5秒に1回まで
   HISTORY_PAGE: 50,
@@ -487,21 +492,21 @@ const CONFIG = {
   LS_STAFF: 'ohtaFarm.staffId'
 };
 
-// 【仮】原因の候補（高橋さんに確認して差し替え）
-const CAUSE_CHIPS = ['不明', '衰弱', '事故・圧死', '病気の疑い'];
+// 死鶏の原因の候補（10/19 高橋さんメール）
+const CAUSE_CHIPS = ['不明', '衰弱', '事故・圧死', '病気', '害獣'];
 
 const BREED = { momiji_f1: 'もみじF1', momiji: 'もみじ', boris_brown: 'ボリスブラウン', unknown: '鶏種未設定' };
-const SHEET_JA = { eggRecords: '産卵', deathRecords: '死廃', molting: '換羽', lotMaster: 'ロット', staffMaster: 'スタッフ' };
+const SHEET_JA = { eggRecords: '産卵', deathRecords: '死鶏', molting: '換羽', lotMaster: 'ロット', staffMaster: 'スタッフ' };
 const ACT_JA = { create: '入力', update: '修正', delete: '削除', restore: '復元' };
 const FIELD_JA = {
-  date: '日付', lotId: 'ロット', eggCount: '産卵数', brokenCount: '破損卵', avgEggWeight: '平均卵重',
-  collectTime: '集卵時刻', note: 'メモ', deadCount: '死亡', culledCount: '淘汰', cause: '原因', staffId: '入力者'
+  date: '日付', lotId: 'ロット', eggCount: '産卵数', brokenCount: '破卵', avgEggWeight: '平均卵重',
+  collectTime: '集卵時刻', note: 'メモ', deadCount: '死鶏', culledCount: '淘汰', cause: '原因', staffId: '入力者'
 };
 const KIND = {
   egg:   { sheet: 'eggRecords',   tray: 'eggTray',   pick: 'eggPick',   panel: 'eggPanel',   first: 'eggCount',
-           fields: ['eggCount', 'brokenCount', 'avgEggWeight'] },
+           fields: ['eggCount', 'brokenCount', 'collectTime', 'trayWeight'] },
   death: { sheet: 'deathRecords', tray: 'deathTray', pick: 'deathPick', panel: 'deathPanel', first: 'deadCount',
-           fields: ['deadCount', 'culledCount'] }
+           fields: ['deadCount'] }
 };
 
 // ============================================================
@@ -1002,10 +1007,25 @@ function closePanel(kind, refresh) {
 // ============================================================
 // 入力パネル
 // ============================================================
+// 卵重の換算（kg ⇄ g）。g は小数2桁で保存し、画面では小数1桁で見せる
+function trayKgToEggG(kg) {
+  return Math.round((kg - CONFIG.TRAY_KG * CONFIG.TRAY_SHEETS) / CONFIG.TRAY_EGGS * 1000 * 100) / 100;
+}
+function eggGToTrayKg(g) {
+  return Math.round((Number(g) / 1000 * CONFIG.TRAY_EGGS + CONFIG.TRAY_KG * CONFIG.TRAY_SHEETS) * 100) / 100;
+}
+function fmtG(g) { return (Math.round(Number(g) * 10) / 10).toFixed(1); }
+
 function recDesc(kind, r) {
-  return kind === 'egg'
-    ? fmt(r.eggCount) + '個' + (Number(r.brokenCount) ? '（破損' + fmt(r.brokenCount) + '）' : '')
-    : '死亡' + fmt(r.deadCount || 0) + '羽 淘汰' + fmt(r.culledCount || 0) + '羽';
+  if (kind === 'egg') {
+    const parts = [];
+    if (r.brokenCount !== '' && r.brokenCount !== null && r.brokenCount !== undefined) parts.push('破卵' + fmt(r.brokenCount));
+    if (r.collectTime) parts.push(r.collectTime + '集卵');
+    return fmt(r.eggCount) + '個' + (parts.length ? '（' + parts.join('・') + '）' : '');
+  }
+  // 淘汰欄は v0.1.5 で廃止。過去の記録に淘汰があるときだけ表示する
+  const culled = Number(r.culledCount) || 0;
+  return '死鶏' + fmt(r.deadCount || 0) + '羽' + (culled ? '・淘汰' + fmt(culled) + '羽' : '') + (r.cause ? '（' + r.cause + '）' : '');
 }
 
 function renderPanel(kind) {
@@ -1061,13 +1081,13 @@ function startEdit(kind, id) {
   if (kind === 'egg') {
     $('eggCount').value = rec.eggCount === '' ? '' : rec.eggCount;
     $('brokenCount').value = rec.brokenCount === '' ? '' : rec.brokenCount;
-    $('avgEggWeight').value = rec.avgEggWeight === '' ? '' : rec.avgEggWeight;
+    $('trayWeight').value = rec.avgEggWeight === '' ? '' : eggGToTrayKg(rec.avgEggWeight).toFixed(2);
+    showEggWeight();
     $('collectTime').value = rec.collectTime || '';
     $('eggNote').value = rec.note || '';
-    $('eggMore').open = !!(rec.avgEggWeight !== '' || rec.collectTime || rec.note);
+    $('eggMore').open = !!(rec.avgEggWeight !== '' || rec.note);
   } else {
     $('deadCount').value = rec.deadCount === '' ? '' : rec.deadCount;
-    $('culledCount').value = rec.culledCount === '' ? '' : rec.culledCount;
     $('cause').value = rec.cause || '';
     $('deathNote').value = rec.note || '';
     syncChips();
@@ -1085,10 +1105,11 @@ function startEdit(kind, id) {
 function clearForm(kind) {
   clearErrs(kind);
   if (kind === 'egg') {
-    ['eggCount', 'brokenCount', 'avgEggWeight', 'collectTime', 'eggNote'].forEach(function (id) { $(id).value = ''; });
+    ['eggCount', 'brokenCount', 'trayWeight', 'collectTime', 'eggNote'].forEach(function (id) { $(id).value = ''; });
+    showEggWeight();
     $('eggMore').open = false;
   } else {
-    ['deadCount', 'culledCount', 'cause', 'deathNote'].forEach(function (id) { $(id).value = ''; });
+    ['deadCount', 'cause', 'deathNote'].forEach(function (id) { $(id).value = ''; });
     syncChips();
   }
 }
@@ -1105,10 +1126,32 @@ document.querySelectorAll('input[data-kind]').forEach(function (inp) {
     clearFieldErr(inp.id);
     let v = toHalf(inp.value);
     if (inp.dataset.kind === 'int') v = v.replace(/[^0-9]/g, '').replace(/^0+(?=\d)/, '');
-    else { v = v.replace(/[^0-9.]/g, ''); const i = v.indexOf('.'); if (i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '').slice(0, 1); }
+    else {
+      const places = inp.dataset.kind === 'dec2' ? 2 : 1;
+      v = v.replace(/[^0-9.]/g, ''); const i = v.indexOf('.');
+      if (i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '').slice(0, places);
+    }
     if (v !== inp.value) inp.value = v;
   });
 });
+
+// ---------- 卵重：kg を入れると1個あたりの g を表示 ----------
+function showEggWeight() {
+  const kg = decVal('trayWeight', 2);
+  const out = $('eggWeightOut');
+  if (kg === '' || Number.isNaN(kg)) { out.textContent = '1個あたり：—'; return; }
+  const g = trayKgToEggG(kg);
+  out.textContent = '1個あたり：' + (g > 0 ? fmtG(g) + ' g' : '—');
+}
+$('trayWeight').addEventListener('input', showEggWeight);
+
+// ---------- 集卵時刻 ----------
+$('collectNow').addEventListener('click', function () {
+  const d = new Date();
+  $('collectTime').value = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  clearFieldErr('collectTime');
+});
+$('collectTime').addEventListener('input', function () { clearFieldErr('collectTime'); });
 
 // ＋／− ボタン。空欄で − を押したときは何もしない（0 が入って入力済みに見えるのを防ぐ）
 document.addEventListener('click', function (e) {
@@ -1132,11 +1175,12 @@ function intVal(id) {
   const n = Number(v);
   return Number.isInteger(n) && n >= 0 ? n : NaN;
 }
-function decVal(id) {
+function decVal(id, places) {
   const v = toHalf($(id).value).trim();
   if (v === '') return '';
   const n = Number(v);
-  return isFinite(n) && n >= 0 ? Math.round(n * 10) / 10 : NaN;
+  const p = Math.pow(10, places || 1);
+  return isFinite(n) && n >= 0 ? Math.round(n * p) / p : NaN;
 }
 
 // ---------- 原因チップ ----------
@@ -1203,17 +1247,27 @@ $('eggSave').addEventListener('click', async function () {
   clearErrs('egg');
   const eggCount = intVal('eggCount');
   const broken = intVal('brokenCount');
-  const weight = decVal('avgEggWeight');
+  const trayKg = decVal('trayWeight', 2);
+  const collectTime = $('collectTime').value;
   if (eggCount === null) return fieldErr('eggCount', '産卵数を入力してください');
   if (Number.isNaN(eggCount)) return fieldErr('eggCount', '産卵数は数字で入力してください');
-  if (Number.isNaN(broken)) return fieldErr('brokenCount', '破損卵は数字で入力してください');
-  if (Number.isNaN(weight)) { $('eggMore').open = true; return fieldErr('avgEggWeight', '平均卵重は数字で入力してください'); }
+  if (Number.isNaN(broken)) return fieldErr('brokenCount', '破卵は数字で入力してください');
   if (S.boot.config.brokenIncludedInEggCount && (broken || 0) > eggCount) {
-    return fieldErr('brokenCount', '破損卵が産卵数より多くなっています');
+    return fieldErr('brokenCount', '破卵が産卵数より多くなっています');
+  }
+  let weight = '';
+  if (trayKg !== '') {
+    $('eggMore').open = true;
+    if (Number.isNaN(trayKg)) return fieldErr('trayWeight', '重さは数字で入力してください（例 12.30）');
+    weight = trayKgToEggG(trayKg);
+    if (!(weight >= CONFIG.EGG_G_MIN && weight <= CONFIG.EGG_G_MAX)) {
+      return fieldErr('trayWeight', '1個あたり ' + (weight > 0 ? fmtG(weight) : '0') + 'g になります。重さ（kg）を見直してください');
+    }
   }
 
   const ed = S.edit.egg;
   const cur = recordsFor('egg', lotId);
+  const lot = lotOf(lotId);
   const name = lotLabel(lotId);
   const isPast = !ed && S.date !== S.boot.today;
   const isDup = !ed && cur.length > 0;
@@ -1221,10 +1275,13 @@ $('eggSave').addEventListener('click', async function () {
   const dayTotal = sumOf(cur, 'eggCount') - (ed ? Number(ed.eggCount) || 0 : 0) + eggCount;
   const ratio = prevSum > 0 ? (dayTotal - prevSum) / prevSum : 0;
   const isBig = prevSum > 0 && Math.abs(ratio) >= CONFIG.EGG_DIFF_WARN;
+  // 羽数（ロット表の羽数。死鶏は差し引かないので、実際より少し多めの目安）を超えたか
+  const birds = lot ? Number(lot.initialCount) || 0 : 0;
+  const isOver = birds > 0 && dayTotal > birds;
 
-  if (isPast || isDup || isBig) {
+  if (isPast || isDup || isBig || isOver) {
     const okText = isDup ? '追加する' : 'このまま保存する';
-    const cancelText = isBig ? '数字を見直す' : 'やめる';
+    const cancelText = (isBig || isOver) ? '数字を見直す' : 'やめる';
     const titles = [];
     const parts = [fmtDate(S.date) + '|　ロット ' + name];
     if (isPast) {
@@ -1241,16 +1298,28 @@ $('eggSave').addEventListener('click', async function () {
       titles.push('前の日と|数字が|大きく違います');
       parts.push('前の日より|' + fmt(Math.abs(d)) + '個|' + (d < 0 ? '少ない' : '多い') + '|（' + (pct > 0 ? '+' : '') + pct + '%）\n前の日：' + fmt(prevSum) + '個|　この日：' + fmt(dayTotal) + '個\n数字に間違いがなければ|保存してください。');
     }
+    if (isOver) {
+      titles.push('産卵数が|羽数を|超えています');
+      parts.push('羽数：約' + fmt(birds) + '羽|　この日：' + fmt(dayTotal) + '個\n' +
+        (collectTime
+          ? '集卵時刻のずれで|多くなった日なら|保存してください。'
+          : '集卵時刻のずれで|多くなった日なら、|「数字を見直す」を押して|集卵時刻を入れてから|保存してください。'));
+    }
     const ok = await confirmDlg({
       title: titles.length > 1 ? '保存の前に|確かめてください' : titles[0],
       body: parts.join('\n\n'), ok: okText, cancel: cancelText
     });
-    if (!ok) { if (isBig) $('eggCount').focus(); return; }
+    if (!ok) {
+      if (isOver && !collectTime) fieldErr('collectTime', '集卵を終えた時刻を入れてください');
+      else if (isBig || isOver) $('eggCount').focus();
+      return;
+    }
   }
 
+  // 破卵の空欄は「未記録」。0 に変えずに空欄のまま送る
   await saveRecord('egg', {
-    date: S.date, lotId: lotId, eggCount: eggCount, brokenCount: broken || 0,
-    avgEggWeight: weight, collectTime: $('collectTime').value, note: $('eggNote').value.trim()
+    date: S.date, lotId: lotId, eggCount: eggCount, brokenCount: broken === null ? '' : broken,
+    avgEggWeight: weight, collectTime: collectTime, note: $('eggNote').value.trim()
   });
 });
 
@@ -1260,19 +1329,19 @@ $('deathSave').addEventListener('click', async function () {
   if (!lotId) { toast('ロットを選んでください', 'err'); return; }
   clearErrs('death');
   const dead = intVal('deadCount');
-  const culled = intVal('culledCount');
+  if (dead === null) return fieldErr('deadCount', '死鶏の羽数を入力してください（いなければ 0）');
   if (Number.isNaN(dead)) return fieldErr('deadCount', '羽数は数字で入力してください');
-  if (Number.isNaN(culled)) return fieldErr('culledCount', '羽数は数字で入力してください');
-  if (!(dead > 0) && !(culled > 0)) return fieldErr('deadCount', '死亡か淘汰の羽数を入力してください');
 
   const ed = S.edit.death;
   const cur = recordsFor('death', lotId);
   const name = lotLabel(lotId);
   const isPast = !ed && S.date !== S.boot.today;
   const isDup = !ed && cur.length > 0;
+  const isMany = dead >= CONFIG.DEAD_WARN;
 
-  if (isPast || isDup) {
-    const okText = isDup ? '追加する' : '保存する';
+  if (isPast || isDup || isMany) {
+    const okText = isDup ? '追加する' : (isMany ? 'このまま保存する' : '保存する');
+    const cancelText = isMany ? '数字を見直す' : 'やめる';
     const titles = [];
     const parts = [fmtDate(S.date) + '|　ロット ' + name];
     if (isPast) {
@@ -1283,17 +1352,21 @@ $('deathSave').addEventListener('click', async function () {
       titles.push(name + ' は|この日|入力済みです');
       parts.push('入力済み：' + (sumOf(cur, 'deadCount') + sumOf(cur, 'culledCount')) + '羽\n追加分なら|「追加する」\n数字の間違いなら|「やめる」を押して、|上の「直す」から|直してください。');
     }
+    if (isMany) {
+      titles.push('死鶏が|' + fmt(dead) + '羽に|なっています');
+      parts.push('死鶏：' + fmt(dead) + '羽\n産卵数を|入れていませんか？\n数字に間違いがなければ|保存してください。');
+    }
     const ok = await confirmDlg({
       title: titles.length > 1 ? '保存の前に|確かめてください' : titles[0],
-      body: parts.join('\n\n'), ok: okText, cancel: 'やめる'
+      body: parts.join('\n\n'), ok: okText, cancel: cancelText
     });
-    if (!ok) return;
+    if (!ok) { if (isMany) $('deadCount').focus(); return; }
   }
 
-  await saveRecord('death', {
-    date: S.date, lotId: lotId, deadCount: dead || 0, culledCount: culled || 0,
-    cause: $('cause').value.trim(), note: $('deathNote').value.trim()
-  });
+  // 淘汰欄は廃止。新規は 0 を入れ、直すときは過去の値に触らない
+  const data = { date: S.date, lotId: lotId, deadCount: dead, cause: $('cause').value.trim(), note: $('deathNote').value.trim() };
+  if (!ed) data.culledCount = 0;
+  await saveRecord('death', data);
 });
 
 // ---------- 削除（管理者のみ） ----------
@@ -1350,7 +1423,7 @@ function renderSummary() {
     eggs += l.eggCount; loss += l.deadToday + l.culledToday;
     if (l.eggRecordCount > 0) done++;
     if (l.layingRate !== null) {
-      rateEggs += S.boot.config.brokenIncludedInEggCount ? l.eggCount : l.eggCount + l.brokenCount;
+      rateEggs += S.boot.config.brokenIncludedInEggCount ? l.eggCount : l.eggCount + (l.brokenCount || 0);
       rateBirds += l.birdsStart;
     }
     if (l.missing && (l.missing.initialCount || l.missing.hatchDate)) missing++;
@@ -1361,7 +1434,7 @@ function renderSummary() {
     '<div class="tot"><small>産卵数の合計</small><b class="num">' + esc(fmt(eggs)) + '<i>個</i></b></div>' +
     '<div class="tot"><small>入力済み</small><b class="num">' + esc(done) + '<i>/ ' + esc(lots.length) + ' ロット</i></b></div>' +
     '<div class="tot"><small>産卵率（全体）</small><b class="num">' + (rate === null ? '—' : esc(rate) + '<i>%</i>') + '</b></div>' +
-    '<div class="tot"><small>死亡・淘汰</small><b class="num">' + esc(fmt(loss)) + '<i>羽</i></b></div>' +
+    '<div class="tot"><small>死鶏</small><b class="num">' + esc(fmt(loss)) + '<i>羽</i></b></div>' +
     '</div>';
   if (missing) {
     html += '<p class="note-box">ふ化日・入舎羽数が未登録のロットが ' + esc(missing) + ' あります。そのロットは日齢・羽数・産卵率を表示できません。</p>';
@@ -1380,8 +1453,9 @@ function renderSummary() {
       '<div>産卵率 <b>' + esc(l.layingRate === null ? '—' : l.layingRate + '%') + '</b></div>' +
       '<div>羽数 <b>' + esc(fmt(l.birdsStart)) + '</b></div>' +
       '<div>日齢 <b>' + esc(age) + '</b></div>' +
-      '<div>破損 <b>' + esc(l.eggRecordCount > 0 ? fmt(l.brokenCount) : '—') + '</b></div>' +
-      '<div>死廃 <b>' + esc(fmt(l.deadToday + l.culledToday)) + '</b></div>' +
+      // 破卵：記録がない日は「—」（Code.gs v0.1.7 は未記録を null で返す）
+      '<div>破卵 <b>' + esc(l.eggRecordCount > 0 && l.brokenCount !== null && l.brokenCount !== undefined ? fmt(l.brokenCount) : '—') + '</b></div>' +
+      '<div>死鶏 <b>' + esc(fmt(l.deadToday + l.culledToday)) + '</b></div>' +
       '</div></button>';
   });
   html += '</div>';
