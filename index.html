@@ -13,6 +13,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
 <!--
   太田ファーム 養鶏記録アプリ — スマホ画面
+  index.html  v0.1.6  (2026-11-02)
+    ・一覧タブの上部に、その日の天気（最高・最低気温、降水量、日照時間）を表示
+      出典：気象庁（アメダス江別）。今日は「あすの朝に記録」、発表前の日は「発表待ち」と表示
+    ・Code.gs v0.1.8 が必要（v0.1.7 以前のサーバーでは天気の欄を出さないだけで、他は動く）
   index.html  v0.1.5  (2026-10-19)
     ・表記を太田ファームの言葉に（死廃→死鶏、死亡→死鶏、破損卵→破卵）
     ・淘汰の欄を削除（淘汰はしないため）。入力済みの表示に原因を出す（「淘汰0羽」が原因に見えていた）
@@ -184,6 +188,12 @@ summary::-webkit-details-marker{display:none}
 .kv div b{color:var(--ink);font-size:var(--fs)}
 .note-box{margin:8px 12px 0;padding:10px 14px;border-radius:12px;background:var(--warn-bg);font-size:var(--fs-s)}
 .empty{margin:28px 16px;text-align:center;color:var(--sub)}
+/* 天気（一覧タブ上部） */
+.wx{margin:16px 12px 0;background:var(--paper);border-radius:16px;border:2px solid var(--line);padding:10px 14px}
+.wx h3{font-size:var(--fs-s);color:var(--sub);font-weight:500}
+.wx .kv b i{font-style:normal;font-size:var(--fs-s);margin-left:2px}
+.wx .wx-msg{font-size:var(--fs-s);color:var(--ink);margin-top:2px}
+.wx .wx-src{font-size:18px;color:var(--sub);margin-top:6px;line-height:1.4}
 
 /* 管理 */
 .card{margin:16px 12px;background:var(--paper);border-radius:20px;padding:16px;border:2px solid var(--line)}
@@ -478,7 +488,7 @@ summary::-webkit-details-marker{display:none}
 const CONFIG = {
   // ※GAS「デプロイを管理」から末尾まで再コピーして貼り替えること
   APP_URL: 'https://script.google.com/macros/s/AKfycbxI9H45javTzvENCldrMK3-Mkp14Jf8foAD-5B0mGaKzgT0VfQ1jJ7W6tcg8tioqSZ4SQ/exec',
-  APP_VERSION: '0.1.5',
+  APP_VERSION: '0.1.6',
   TIMEOUT_MS: 30000,
   EGG_DIFF_WARN: 0.15,             // 前日比 ±15%以上で確認を出す（数字の提示のみ・解釈はしない）
   DEAD_WARN: 30,                   // 死鶏がこの羽数以上なら確認を出す（産卵数の入れ間違い対策）
@@ -1414,9 +1424,38 @@ async function loadSummary() {
   }
 }
 
+// その日の天気（Code.gs v0.1.8 の summary.weather）。古いサーバー（weather が無い）なら何も出さない
+function weatherHtml() {
+  if (!S.summary || !('weather' in S.summary)) return '';
+  const w = S.summary.weather;
+  const date = S.summaryDate;
+  const today = jstToday() || (S.boot && S.boot.today) || '';
+  const v1 = function (n, unit) {
+    return (n === null || n === undefined) ? '—' : esc(Number(n).toFixed(1)) + '<i>' + unit + '</i>';
+  };
+  let body;
+  if (w) {
+    body = '<div class="kv num">' +
+      '<div>最高 <b>' + v1(w.tempMax, '℃') + '</b></div>' +
+      '<div>最低 <b>' + v1(w.tempMin, '℃') + '</b></div>' +
+      '<div>降水量 <b>' + v1(w.precipitation, 'mm') + '</b></div>' +
+      '<div>日照 <b>' + v1(w.sunshineHours, '時間') + '</b></div>' +
+      '</div>' + (w.partial ? '<p class="wx-msg">一部の値がまだ揃っていません（揃いしだい自動で更新します）</p>' : '');
+  } else if (today && date >= today) {
+    body = '<p class="wx-msg">今日の天気は、あすの朝に記録されます</p>';
+  } else if (today && date >= addDays(today, -2)) {
+    body = '<p class="wx-msg">気象庁の発表待ちです（発表されしだい自動で記録します）</p>';
+  } else {
+    body = '<p class="wx-msg">この日の天気の記録はありません</p>';
+  }
+  return '<div class="wx"><h3>天気（江別）</h3>' + body +
+    '<p class="wx-src">出典：気象庁（アメダス江別・農場から約10km）。降水量・日照時間は参考値</p></div>';
+}
+
 function renderSummary() {
   const lots = S.summary.lots || [];
-  if (!lots.length) { $('sumBody').innerHTML = '<p class="empty">この日に表示するロットはありません</p>'; return; }
+  const wx = weatherHtml();
+  if (!lots.length) { $('sumBody').innerHTML = wx + '<p class="empty">この日に表示するロットはありません</p>'; return; }
 
   let eggs = 0, done = 0, loss = 0, rateEggs = 0, rateBirds = 0, missing = 0;
   lots.forEach(function (l) {
@@ -1430,7 +1469,7 @@ function renderSummary() {
   });
   const rate = rateBirds > 0 ? Math.round(rateEggs / rateBirds * 1000) / 10 : null;
 
-  let html = '<div class="totals">' +
+  let html = wx + '<div class="totals">' +
     '<div class="tot"><small>産卵数の合計</small><b class="num">' + esc(fmt(eggs)) + '<i>個</i></b></div>' +
     '<div class="tot"><small>入力済み</small><b class="num">' + esc(done) + '<i>/ ' + esc(lots.length) + ' ロット</i></b></div>' +
     '<div class="tot"><small>産卵率（全体）</small><b class="num">' + (rate === null ? '—' : esc(rate) + '<i>%</i>') + '</b></div>' +
