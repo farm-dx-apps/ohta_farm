@@ -1,0 +1,14 @@
+{
+  "name": "太田ファーム 養鶏記録",
+  "short_name": "養鶏記録",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#FDCB45",
+  "theme_color": "#8B2635",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
