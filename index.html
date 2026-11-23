@@ -17,6 +17,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
 <!--
   太田ファーム 養鶏記録アプリ — スマホ画面
+  index.html  v0.1.8.1  (2026-11-23)
+    ・死鶏は「死鶏があった日だけ入力」の運用に（杉尾さん決定 11/23）。入力がないロットは 0羽として扱う
+      （集計・羽数は以前から記録なし＝0羽で計算しているため、変えたのは表示だけ。0の行は自動で作らない）
+    ・死鶏入力のロット一覧：入力がないロットは「未入力」ではなく「0羽」と表示。死鶏があったロットだけ色が付く
+      農場名の横は「○/○ 入力済み」ではなく「死鶏 合計○羽」
+    ・死鶏の入力欄の案内を「死鶏があったときだけ入力」に変更
+    ・Code.gs は v0.1.8 のまま（変更なし）
   index.html  v0.1.8  (2026-11-03)
     ・ロット選択を舎ごとの段に（高橋さん要望 11/3）：本社は 1段目 1-1〜1-4、2段目 2-1〜2-4、3段目 3-1〜3-2
       第2農場（舎ごとに1ロット）は D1〜D3 を1段に。1段は最大4つ（4列）
@@ -389,7 +396,7 @@ summary::-webkit-details-marker{display:none}
 
         <div class="field">
           <label for="deadCount">死鶏（羽）</label>
-          <input id="deadCount" class="bignum num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="いなければ 0" data-kind="int">
+          <input id="deadCount" class="bignum num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="死鶏があったときだけ入力" data-kind="int">
           <div class="steps">
             <button class="step minus" data-step="deadCount:-10">−10</button>
             <button class="step minus" data-step="deadCount:-1">−1</button>
@@ -504,7 +511,7 @@ summary::-webkit-details-marker{display:none}
 const CONFIG = {
   // ※GAS「デプロイを管理」から末尾まで再コピーして貼り替えること
   APP_URL: 'https://script.google.com/macros/s/AKfycbxI9H45javTzvENCldrMK3-Mkp14Jf8foAD-5B0mGaKzgT0VfQ1jJ7W6tcg8tioqSZ4SQ/exec',
-  APP_VERSION: '0.1.8',
+  APP_VERSION: '0.1.8.1',
   TIMEOUT_MS: 30000,
   EGG_DIFF_WARN: 0.15,             // 前日比 ±15%以上で確認を出す（数字の提示のみ・解釈はしない）
   DEAD_WARN: 30,                   // 死鶏がこの羽数以上なら確認を出す（産卵数の入れ間違い対策）
@@ -972,6 +979,7 @@ function renderTray(kind) {
 
   box.innerHTML = farms.map(function (f) {
     let doneN = 0;
+    let deadSum = 0; // 死鶏入力：農場ごとの合計（入力がないロットは 0羽）
     // 1つの舎に複数ロットがある農場（本社）は、舎ごとに段を分ける（1号舎＝1段目、2号舎＝2段目…）
     // 舎ごとに1ロットの農場（第2農場）は1段に並べる
     const perHouse = {};
@@ -994,8 +1002,9 @@ function renderTray(kind) {
       const done = recs.length > 0;
       if (done) doneN++;
       let sub;
+      if (kind === 'death' && done) deadSum += sumOf(recs, 'deadCount') + sumOf(recs, 'culledCount');
       if (S.dayLoading) sub = '…';
-      else if (!done) sub = '未入力';
+      else if (!done) sub = kind === 'death' ? '0羽' : '未入力'; // 死鶏は入力がなければ 0羽
       else if (kind === 'egg') sub = fmt(sumOf(recs, 'eggCount'));
       else sub = (sumOf(recs, 'deadCount') + sumOf(recs, 'culledCount')) + '羽';
       const cnt = (!S.dayLoading && recs.length > 1)
@@ -1005,7 +1014,7 @@ function renderTray(kind) {
         '<b>' + esc(l.lotName) + '</b><small class="num">' + esc(sub) + '</small>' + cnt + '</button>';
     }).join('');
     return '<div class="farm"><h3>' + esc(f.name) + '</h3><span class="num">' +
-      (S.dayLoading ? '' : doneN + ' / ' + f.lots.length + ' 入力済み') + '</span></div>' +
+      (S.dayLoading ? '' : kind === 'death' ? '死鶏 合計 ' + deadSum + '羽' : doneN + ' / ' + f.lots.length + ' 入力済み') + '</span></div>' +
       '<div class="tray">' + cells + '</div>';
   }).join('');
 }
@@ -1372,7 +1381,7 @@ $('deathSave').addEventListener('click', async function () {
   if (!lotId) { toast('ロットを選んでください', 'err'); return; }
   clearErrs('death');
   const dead = intVal('deadCount');
-  if (dead === null) return fieldErr('deadCount', '死鶏の羽数を入力してください（いなければ 0）');
+  if (dead === null) return fieldErr('deadCount', '死鶏の羽数を入力してください');
   if (Number.isNaN(dead)) return fieldErr('deadCount', '羽数は数字で入力してください');
 
   const ed = S.edit.death;
